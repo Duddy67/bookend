@@ -1,0 +1,45 @@
+{% set books = __SELF__.books %}
+{% set category = __SELF__.category %}
+
+{% if category.breadcrumb is not null %}
+  {% partial "@breadcrumb" path = category.breadcrumb prefix = category.prefix %}
+{% endif %}
+
+<ul class="book-list">
+    {% for book in books %}
+        <li>
+            <h3><a href="{{ book.url }}">{{ book.title }}</a></h3>
+            <p class="info">
+	        Posted
+                {% if book.categories.count %} in {% endif %}
+                {% for category in book.categories %}
+                    <a href="{{ category.url }}">{{ category.name }}</a>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+                on {{ book.published_at|date('M d, Y') }}
+            </p>
+
+            <p class="excerpt">{{ book.summary|raw }}</p>
+        </li>
+    {% else %}
+        <li class="no-data">{{ __SELF__.noBooksMessage }}</li>
+    {% endfor %}
+</ul>
+
+{% if books.lastPage > 1 %}
+    <ul class="pagination">
+        {% if books.currentPage > 1 %}
+            <li><a href="{{ this.page.baseFileName|page({ (__SELF__.pageParam): ':' ~ (books.currentPage-1) }) }}">&larr; Prev</a></li>
+        {% endif %}
+
+        {% for page in 1..books.lastPage %}
+            <li class="{{ books.currentPage == page ? 'active' : null }}">
+	      <a href="{{ this.page.baseFileName|page( {(__SELF__.pageParam): ':' ~ page }) }}">{{ page }}</a>
+            </li>
+        {% endfor %}
+
+        {% if books.lastPage > books.currentPage %}
+            <li><a href="{{ this.page.baseFileName|page({ (__SELF__.pageParam): ':' ~ (books.currentPage+1) }) }}">Next &rarr;</a></li>
+        {% endif %}
+    </ul>
+{% endif %}
+

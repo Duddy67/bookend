@@ -1,0 +1,25 @@
+tabs:
+    fields:
+        show_all_books:
+            span: left
+            label: rainlab.blog::lang.blog.show_all_posts_label
+            comment: rainlab.blog::lang.blog.show_all_posts_comment
+            type: switch
+            default: 1
+            tab: codalia.bookend::lang.global_settings.tab_general
+            
+        max_characters:
+            span: left
+            label: codalia.bookend::lang.global_settings.max_characters
+            comment: codalia.bookend::lang.global_settings.max_characters_comment
+            type: text
+            default: 600
+            tab: codalia.bookend::lang.global_settings.tab_general
+
+        show_breadcrumb:
+            span: left
+            label: codalia.bookend::lang.global_settings.show_breadcrumb_label
+            comment: codalia.bookend::lang.global_settings.show_breadcrumb_comment
+            type: switch
+            default: 1
+            tab: codalia.bookend::lang.global_settings.tab_general

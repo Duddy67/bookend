@@ -1,0 +1,41 @@
+# ===================================
+# Filter Scope Definitions
+# ===================================
+
+scopes:
+
+    category:
+
+        # Filter name
+        label: codalia.bookend::lang.books.filter_category
+
+        # Model Class name
+        modelClass: Codalia\Bookend\Models\Category
+
+        # Model attribute to display for the name
+        nameFrom: name
+
+        # Apply query scope
+        scope: FilterCategories
+
+
+    published_date:
+
+        # Filter name
+        label: codalia.bookend::lang.books.filter_date
+
+        # Filter type
+        type: daterange
+
+        # SQL Conditions
+        conditions: created_at >= ':after' AND created_at <= ':before'
+
+
+    status:
+        label: codalia.bookend::lang.books.filter_status
+        type: group
+        conditions: status in (:filtered)
+        options:
+            published: codalia.bookend::lang.status.published
+            unpublished: codalia.bookend::lang.status.unpublished
+            archived: codalia.bookend::lang.status.archived

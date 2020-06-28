@@ -1,0 +1,138 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    title:
+        label: codalia.bookend::lang.attribute.title
+        span: left
+        placeholder: codalia.bookend::lang.book.title_placeholder
+        required: true
+
+    slug:
+        label: codalia.bookend::lang.attribute.slug
+        span: right
+        placeholder: codalia.bookend::lang.book.slug_placeholder
+        required: true
+        preset:
+            field: title
+            type: slug
+
+secondaryTabs:
+    stretch: true
+    fields:
+        description:
+            tab: codalia.bookend::lang.attribute.tab_edit
+            type: richeditor
+            stretch: true
+
+        category:
+            tab: codalia.bookend::lang.book.tab_categories
+            label: codalia.bookend::lang.attribute.main_category
+            span: left
+            type: relation
+            required: true
+
+        categories:
+            tab: codalia.bookend::lang.book.tab_categories
+            span: left
+            type: relation
+            commentAbove: codalia.bookend::lang.book.categories_comment
+            placeholder: codalia.bookend::lang.book.categories_placeholder
+
+        status:
+            tab: codalia.bookend::lang.attribute.tab_manage
+            label: codalia.bookend::lang.attribute.status
+            span: left
+            type: dropdown
+            permissions: codalia.bookend.access_publish
+
+        # Read-only information field for users without publish access.
+        _status_field:
+            tab: codalia.bookend::lang.attribute.tab_manage
+            label: codalia.bookend::lang.attribute.status
+            span: left
+            disabled: true
+
+        usergroup:
+            tab: codalia.bookend::lang.attribute.tab_manage
+            label: codalia.bookend::lang.attribute.viewing_access
+            span: right
+            type: relation
+            emptyOption: Public
+
+        published_up:
+            tab: codalia.bookend::lang.attribute.tab_manage
+            label: codalia.bookend::lang.attribute.published_up
+            type: datepicker
+            mode: datetime
+            span: left
+            permissions: codalia.bookend.access_publish
+            trigger:
+                action: enable
+                field: status
+                condition: value[published]
+
+        published_down:
+            tab: codalia.bookend::lang.attribute.tab_manage
+            label: codalia.bookend::lang.attribute.published_down
+            type: datepicker
+            mode: datetime
+            span: right
+            permissions: codalia.bookend.access_publish
+            trigger:
+                action: enable
+                field: status
+                condition: value[published]
+
+        created_at:
+            tab: codalia.bookend::lang.attribute.tab_manage
+            label: codalia.bookend::lang.attribute.created_at
+            span: left
+            type: datepicker
+            mode: datetime
+            context: [update]
+            disabled: true
+
+        updated_at:
+            tab: codalia.bookend::lang.attribute.tab_manage
+            label: codalia.bookend::lang.attribute.updated_at
+            span: right
+            type: datepicker
+            mode: datetime
+            context: [update]
+            disabled: true
+
+        user:
+            tab: codalia.bookend::lang.attribute.tab_manage
+            label: codalia.bookend::lang.attribute.created_by
+            span: left
+            type: relation
+            select: concat(first_name, ' ', last_name)
+            permissions: codalia.bookend.access_other_books
+
+        # Read-only information field for users without other_books access.
+        _created_by_field:
+            tab: codalia.bookend::lang.attribute.tab_manage
+            label: codalia.bookend::lang.attribute.created_by
+            span: left
+            context: [update]
+            disabled: true
+
+        # Read-only information field.
+        _updated_by_field:
+            tab: codalia.bookend::lang.attribute.tab_manage
+            label: codalia.bookend::lang.attribute.updated_by
+            span: right
+            context: [update]
+            disabled: true
+
+        id:
+            tab: codalia.bookend::lang.attribute.tab_manage
+            label: ID
+            span: left
+            context: [update]
+            disabled: true
+
+
+

@@ -1,0 +1,17 @@
+# ===================================
+#  Reorder Behavior Config
+# ===================================
+
+# Reorder Title
+title: codalia.bookend::lang.categories.reorder
+
+# Attribute name
+nameFrom: name
+
+# Model Class name
+modelClass: Codalia\Bookend\Models\Category
+
+# Toolbar widget configuration
+toolbar:
+    # Partial for toolbar buttons
+    buttons: reorder_toolbar

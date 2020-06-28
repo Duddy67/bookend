@@ -1,0 +1,17 @@
+{% set url = url('/') ~ '/' ~ prefix %}
+
+<div style="padding: 20px">
+    <div class="control-breadcrumb">
+        <ul>
+	    <li><a href="{{ url('/') }}">Home</a></li>
+	    {% for item in path %}
+		{% if loop.last %}
+		    <li>{{ item.name }}</li>
+		{% else %}
+		    <li><a href="{{ item.url }}">{{ item.name }}</a></li>
+		{% endif %}
+	    {% endfor %}
+        </ul>
+    </div>
+</div>
+

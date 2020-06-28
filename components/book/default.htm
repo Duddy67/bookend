@@ -1,0 +1,48 @@
+{% set book = __SELF__.book %}
+
+
+{% put head %}
+  <link href="{{ url('/') }}/{{ book.canonical }}" rel="canonical">
+{% endput %}
+
+{% if book.breadcrumb is not null %}
+  {% partial "@breadcrumb" path = book.breadcrumb prefix = book.prefix %}
+{% endif %}
+
+<h3>{{ book.title }}</h3>
+<div class="content">{{ book.description|raw }}</div>
+	<?= e(trans('codalia.bookend::lang.action.new')) ?>
+
+{% if book.featured_images.count %}
+    <div class="featured-images text-center">
+        {% for image in book.featured_images %}
+            <p>
+                <img
+                    data-src="{{ image.filename }}"
+                    src="{{ image.path }}"
+                    alt="{{ image.description }}"
+                    style="max-width: 100%" />
+            </p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<p class="info">
+Posted in {% if book.categories.count %},  
+        {% for category in book.categories %}
+	    <a href="{{ category.url }}">{{ category.name }}</a>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+    {% endif %}
+    on {{ book.published_at|date('M d, Y') }}
+</p>
+
+{% set previous, next = __SELF__.previousBook(), __SELF__.nextBook() %}
+
+{% if previous %}
+  <p>&lt;&lt; <a href="{{ previous.url }}"/>{{ previous.title }}</a></p>
+{% endif %}
+
+{% if next %}
+  <p><a href="{{ next.url }}"/>{{ next.title }}</a> &gt;&gt;</p>
+{% endif %}
+

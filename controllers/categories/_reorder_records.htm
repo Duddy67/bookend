@@ -1,0 +1,43 @@
+<!-- Extending of the _records.htm partial file. (modules/backend/behaviors/reordercontroller/partials) -->
+<?php foreach ($records as $key => $record): ?>
+    <?php if ($record->parent === null || $record->parent->attributes['status'] == 'published') :
+	      $depth = ''; ?>
+      <li data-record-id="<?= $record->getKey() ?>"
+	  <?php if ($reorderSortMode === 'simple') : ?>
+	      data-record-sort-order="<?= $record->{$record->getSortOrderColumn()} ?>"
+	  <?php endif ?> > 
+    <?php else :
+            // Computes the depth offset.
+            $parent = $record->parent;
+	    $offset = 0;
+	    // Goes up to the highest unpublished parent.
+	    while ($parent && $parent->status == 'unpublished') {
+	        $offset = $parent->nest_depth;
+		$parent = $parent->parent;
+	    }
+
+	    $depth = 'depth-'.($record->nest_depth - $offset); ?>
+    <?php endif ?>
+   
+	<div class="record <?= $depth ?>">
+	  <?php if ($record->status == 'published') : ?>
+            <a href="javascript:;" class="move"></a>
+	  <?php else : // Unpublished records cannot be moved. ?>
+	    <span class="lock"></span>
+	  <?php endif ?>
+	    <span class="oc-icon-circle text-<?= $statusIcons[$record->status] ?>"><?= e($this->reorderGetRecordName($record)) ?></span>
+            <input name="record_ids[]" type="hidden" value="<?= $record->getKey() ?>" />
+        </div>
+
+        <?php if ($reorderShowTree): ?>
+	    <?php echo ($record->status == 'published') ? '<ol>' : ''; ?>
+		<?php if ($record->children): ?>
+		    <?= $this->reorderMakePartial('records', ['records' => $record->children]) ?>
+		<?php endif ?>
+	    <?php echo ($record->status == 'published') ? '</ol>' : ''; ?>
+        <?php endif; ?>
+    <?php if ($record->parent === null || $record->parent->attributes['status'] == 'published') : ?>
+      </li>
+    <?php endif ?>
+
+<?php endforeach ?>

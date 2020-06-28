@@ -1,0 +1,67 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    name:
+        label: codalia.bookend::lang.attribute.name
+        span: left
+        placeholder: codalia.bookend::lang.category.name_placeholder
+        required: true
+
+    slug:
+        label: codalia.bookend::lang.attribute.slug
+        span: right
+        placeholder: codalia.bookend::lang.category.slug_placeholder
+        required: true
+        preset:
+            field: name
+            type: slug
+
+    status:
+        label: codalia.bookend::lang.attribute.status
+        type: dropdown
+        span: left
+
+    # Read-only information field 
+    _status_field:
+        label: codalia.bookend::lang.attribute.status
+        span: left
+        disabled: true
+
+    parent:
+        label: codalia.bookend::lang.attribute.parent_category
+        span: left
+        type: relation
+        nameFrom: name
+        emptyOption: codalia.bookend::lang.attribute.none
+
+    # Read-only information field 
+    _parent_field:
+        label: codalia.bookend::lang.attribute.parent_category
+        span: left
+        disabled: true
+
+    description:
+        label: codalia.bookend::lang.attribute.description
+        size: large
+        oc.commentPosition: ''
+        span: full
+        type: textarea
+
+    created_at:
+        label: codalia.bookend::lang.attribute.created_at
+        type: datepicker
+        mode: datetime
+        context: [update]
+        disabled: true
+        span: left
+
+    updated_at:
+        label: codalia.bookend::lang.attribute.updated_at
+        type: datepicker
+        mode: datetime
+        context: [update]
+        disabled: true
+        span: left
+

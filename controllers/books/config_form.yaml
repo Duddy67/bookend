@@ -1,0 +1,31 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: Book
+
+# Model Form Field configuration
+form: $/codalia/bookend/models/book/fields.yaml
+
+# Model Class name
+modelClass: Codalia\Bookend\Models\Book
+
+# Default redirect location
+defaultRedirect: codalia/bookend/books
+
+# Create page
+create:
+    title: Create Book
+    redirect: codalia/bookend/books/update/:id
+    redirectClose: codalia/bookend/books
+
+# Update page
+update:
+    title: Edit Book
+    redirect: codalia/bookend/books/update/:id
+    redirectClose: codalia/bookend/books
+
+# Preview page
+preview:
+    title: Preview Book

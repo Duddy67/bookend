@@ -1,0 +1,25 @@
+# ===================================
+#  List Column Definitions
+# ===================================
+
+columns:
+    name:
+        label: codalia.bookend::lang.attribute.name
+        searchable: true
+
+    status:
+        label: codalia.bookend::lang.attribute.status
+        sortable: true
+        type: partial
+        path: ~/plugins/codalia/bookend/models/book/_status_column.htm
+
+    created_at:
+        label: codalia.bookend::lang.attribute.created_at
+        type: datetime
+        sortable: true
+
+    id:
+        label: ID
+        searchable: true
+
+

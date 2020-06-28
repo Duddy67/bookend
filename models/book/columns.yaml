@@ -1,0 +1,46 @@
+# ===================================
+#  List Column Definitions
+# ===================================
+
+columns:
+    title:
+        label: codalia.bookend::lang.attribute.title
+        searchable: true
+        sortable: true
+
+    _categories:
+        label: codalia.bookend::lang.bookend.categories
+        relation: categories
+        select: name
+        searchable: true
+        sortable: false
+
+    status:
+        label: codalia.bookend::lang.attribute.status
+        sortable: true
+        type: partial
+        path: ~/plugins/codalia/bookend/models/book/_status_column.htm
+
+    access:
+        label: codalia.bookend::lang.attribute.access
+        relation: usergroup
+        select: name
+        default: 'Public'
+        select: codalia_bookend_books.access_id
+        sortable: true
+
+    created_by:
+        label: codalia.bookend::lang.attribute.created_by
+        select: concat(first_name, ' ', last_name)
+        relation: user
+        sortable: true
+
+    created_at:
+        label: codalia.bookend::lang.attribute.created_at
+        type: datetime
+        sortable: true
+
+    id:
+        label: ID
+        searchable: true
+

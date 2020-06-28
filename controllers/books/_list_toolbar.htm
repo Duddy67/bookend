@@ -1,0 +1,95 @@
+<div data-control="toolbar">
+    <a
+        href="<?= Backend::url('codalia/bookend/books/create') ?>"
+        class="btn btn-primary oc-icon-plus">
+	<?= e(trans('codalia.bookend::lang.action.new')) ?>
+    </a>
+
+    <?php if ($this->user->hasAccess('codalia.bookend.access_publish')): ?>
+      <button
+	  class="btn btn-success oc-icon-check-square-o deactivable"
+	  disabled="disabled"
+	  onclick="$(this).data('request-data', { checked: $('.control-list').listWidget('getChecked'), status: 'published' })"
+	  data-request="onSetStatus"
+	  data-trigger-action="enable"
+	  data-trigger=".control-list input[type=checkbox]"
+	  data-trigger-condition="checked"
+	  data-request-success="$.fn.disableButtons();"
+	  data-stripe-load-indicator>
+	  <?= e(trans('codalia.bookend::lang.action.publish')) ?>
+      </button>
+
+      <button
+	  class="btn btn-warning oc-icon-square-o deactivable"
+	  disabled="disabled"
+	  onclick="$(this).data('request-data', { checked: $('.control-list').listWidget('getChecked'), status: 'unpublished' })"
+	  data-request="onSetStatus"
+	  data-trigger-action="enable"
+	  data-trigger=".control-list input[type=checkbox]"
+	  data-trigger-condition="checked"
+	  data-request-success="$.fn.disableButtons();"
+	  data-stripe-load-indicator>
+	  <?= e(trans('codalia.bookend::lang.action.unpublish')) ?>
+      </button>
+
+      <button
+	  class="btn btn-info oc-icon-archive deactivable"
+	  disabled="disabled"
+	  onclick="$(this).data('request-data', { checked: $('.control-list').listWidget('getChecked'), status: 'archived' })"
+	  data-request="onSetStatus"
+	  data-trigger-action="enable"
+	  data-trigger=".control-list input[type=checkbox]"
+	  data-trigger-condition="checked"
+	  data-request-success="$.fn.disableButtons();"
+	  data-stripe-load-indicator>
+	  <?= e(trans('codalia.bookend::lang.action.archive')) ?>
+      </button>
+    <?php endif ?>
+
+    <?php if ($this->user->hasAccess('codalia.bookend.access_check_in')): ?>
+      <button
+	  class="btn btn-info oc-icon-unlock-alt deactivable"
+	  disabled="disabled"
+	  onclick="$(this).data('request-data', { checked: $('.control-list').listWidget('getChecked'), status: 'archived' })"
+	  data-request="onCheckIn"
+	  data-trigger-action="enable"
+	  data-trigger=".control-list input[type=checkbox]"
+	  data-trigger-condition="checked"
+	  data-request-success="$.fn.disableButtons();"
+	  data-stripe-load-indicator>
+	  <?= e(trans('codalia.bookend::lang.action.check_in')) ?>
+      </button>
+    <?php endif ?>
+
+    <?php if ($this->user->hasAccess('codalia.bookend.access_delete')): ?>
+      <button
+	  class="btn btn-danger oc-icon-trash-o deactivable"
+	  disabled="disabled"
+	  onclick="$(this).data('request-data', { checked: $('.control-list').listWidget('getChecked') })"
+	  data-request="onDelete"
+	  data-request-confirm="<?= e(trans('codalia.bookend::lang.action.deletion_confirmation')) ?>"
+	  data-trigger-action="enable"
+	  data-trigger=".control-list input[type=checkbox]"
+	  data-trigger-condition="checked"
+	  data-request-success="$.fn.disableButtons();"
+	  data-stripe-load-indicator>
+	  <?= e(trans('codalia.bookend::lang.action.delete')) ?>
+      </button>
+    <?php endif ?>
+
+    <?php if ($this->user->hasAccess('codalia.bookend.access_publish')): ?>
+      <a href="<?= Backend::url('codalia/bookend/orderings/reorder') ?>" class="btn btn-default oc-icon-sitemap">
+	  <?= e(trans('codalia.bookend::lang.books.reorder')) ?>
+      </a>
+    <?php endif ?>
+</div>
+
+<script>
+$.fn.disableButtons = function() {
+    $(':button.deactivable').each(function() {
+	$(this).prop('disabled', 'disabled');
+    });
+}
+</script>
+
+

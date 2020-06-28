@@ -1,0 +1,11 @@
+1.0.1: First version of bookend
+1.0.2:
+    - 'Created table codalia_bookend_books_table'
+    - create_books_table.php
+    - 'Created table codalia_bookend_categories_table'
+    - create_categories_table.php
+    - 'Created table codalia_bookend_orderings_table'
+    - create_orderings_table.php
+    - 'Seeded codalia_bookend_books table'
+    - seed_table.php
+
