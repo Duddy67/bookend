@@ -310,6 +310,8 @@ class Book extends Model
         $category = ($category === null) ? $this->category : $category;
 	// Sets the category path to the book.
 	$params['category-path'] = implode('/', BookCategory::getCategoryPath($category));
+	// Don't use the homepage (home.htm) to get the book url. Use the book page instead.
+	$pageName = ($pageName == 'home') ? 'book.htm' : $pageName;
 
         // Expose published year, month and day as URL parameters.
         if ($this->published_up) {

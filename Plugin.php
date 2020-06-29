@@ -179,8 +179,8 @@ class Plugin extends PluginBase
 	    'bookend' => [
 		'label'       => 'Bookend',
 		'description' => 'Manage available user countries and states.',
-		'category'    => 'SONG BOOK',
-		'icon'        => 'icon-music',
+		'category'    => 'Bookend',
+		'icon'        => 'icon-book',
 		'class' => 'Codalia\Bookend\Models\Settings',
 		'order'       => 500,
 		'keywords'    => 'geography place placement',

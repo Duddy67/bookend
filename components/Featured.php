@@ -221,7 +221,7 @@ class Featured extends ComponentBase
          * Add a "url" helper attribute for linking to each book and category
          */
         $books->each(function($book, $key) {
-	    $book->setUrl($this->bookPage, $this->controller, $this->category);
+	    $book->setUrl($this->bookPage, $this->controller);
 
 	    $book->categories->each(function($category, $key) {
 		$category->setUrl($this->controller);
