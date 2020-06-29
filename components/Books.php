@@ -9,6 +9,7 @@ use Codalia\Bookend\Models\Category as BookCategory;
 use Codalia\Bookend\Models\Settings;
 use Cms\Classes\Theme;
 use Auth;
+use Event;
 
 
 class Books extends ComponentBase
@@ -159,6 +160,34 @@ class Books extends ComponentBase
 	}
 
 	return $ids;
+    }
+
+    public function init()
+    {
+        Event::listen('translate.localePicker.translateParams', function ($page, $params, $oldLocale, $newLocale) {
+            $newParams = $params;
+
+            foreach ($params as $paramName => $paramValue) {
+		if ($paramName == 'page') {
+		    continue;
+		}
+
+		$realParamName = $paramName;
+
+	        if (preg_match('#^parent-[0-9]+#', $paramName)) {
+		    $realParamName = 'slug';
+		}
+
+		$records = BookCategory::transWhere($realParamName, $paramValue, $oldLocale)->first();
+
+		if ($records) {
+		    $records->translateContext($newLocale);
+		    $newParams[$paramName] = $records[$realParamName];
+		}
+            }
+
+            return $newParams;
+        });
     }
 
     public function onRun()

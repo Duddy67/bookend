@@ -144,13 +144,4 @@ class Categories extends Controller
 
         $this->asExtension('ReorderController')->reorder();
     }
-
-    public function onReorder()
-    {
-	parent::onReorder();
-
-	// Refreshes the category path.
-	$category = Category::find(post('sourceNode'));
-	Category::setCategoryPath($category);
-    }
 }

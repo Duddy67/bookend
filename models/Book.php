@@ -303,13 +303,13 @@ class Book extends Model
         $params = [
             'id'   => $this->id,
             'slug' => $this->slug,
-            'category' => ''
+            'category-path' => ''
         ];
 
 	// If no (current) category is given, the main category of the book is set.
         $category = ($category === null) ? $this->category : $category;
 	// Sets the category path to the book.
-	$params['category'] = implode('/', BookCategory::getCategoryPath($category));
+	$params['category-path'] = implode('/', BookCategory::getCategoryPath($category));
 
         // Expose published year, month and day as URL parameters.
         if ($this->published_up) {

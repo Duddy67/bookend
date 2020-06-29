@@ -118,11 +118,7 @@ class Category extends Model
 
     public function afterSave()
     {
-	self::setCategoryPath($this);
-
 	foreach ($this->getAllChildren() as $children) {
-	    self::setCategoryPath($children);
-
 	    if ($this->status == 'unpublished') {
 		// All of the children items have to be unpublished as well.
 		\Db::table('codalia_bookend_categories')->where('id', $children->id)->update(['status' => 'unpublished']);
@@ -249,21 +245,6 @@ class Category extends Model
 	}
 
         return array_reverse($path);
-    }
-
-    /**
-     * Builds and sets the path attribute for a given category.
-     *
-     * @param object $category
-     *
-     * @return void
-     */
-    public static function setCategoryPath($category)
-    {
-	$path = implode('/', self::getCategoryPath($category));
-
-	// Sets the path.
-	\Db::table('codalia_bookend_categories')->where('id', $category->id)->update(['path' => $path]);
     }
 
     protected static function listSubCategoryOptions()

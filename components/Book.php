@@ -49,17 +49,31 @@ class Book extends ComponentBase
             $newParams = $params;
 
             foreach ($params as $paramName => $paramValue) {
-	        if ($paramName == 'category') {
-		    // Skips this parameter as there is no category attribute in the Book model. 
-		    continue;
+	        if ($paramName == 'category-path') {
+		    // Breaks down the category path string into slug segments.
+		    $slugs = explode('/', $paramValue);
+		    $newPath = '';
+
+		    foreach ($slugs as $slug) {
+			$records = Category::transWhere('slug', $slug, $oldLocale)->first();
+
+			if ($records) {
+			    $records->translateContext($newLocale);
+			    $newPath .= $records['slug'].'/';
+			}
+		    }
+                    // Removes the slash from the end of the string.
+		    $newPath = substr($newPath, 0, -1);
+		    $newParams[$paramName] = $newPath;
 		}
+		else {
+		    $records = BookItem::transWhere($paramName, $paramValue, $oldLocale)->first();
 
-                $records = BookItem::transWhere($paramName, $paramValue, $oldLocale)->first();
-
-                if ($records) {
-                    $records->translateContext($newLocale);
-                    $newParams[$paramName] = $records[$paramName];
-                }
+		    if ($records) {
+			$records->translateContext($newLocale);
+			$newParams[$paramName] = $records[$paramName];
+		    }
+		}
             }
 
             return $newParams;

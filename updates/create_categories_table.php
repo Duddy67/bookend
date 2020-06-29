@@ -14,7 +14,6 @@ class CreateCategoriesTable extends Migration
 	    $table->string('name')->nullable();
             $table->string('slug')->nullable()->index();
             $table->string('code')->nullable();
-            $table->string('path')->index();
             $table->char('status', 15)->default('unpublished');
             $table->text('description')->nullable();
             $table->integer('parent_id')->unsigned()->index()->nullable();
