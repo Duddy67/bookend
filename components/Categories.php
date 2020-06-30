@@ -42,6 +42,12 @@ class Categories extends ComponentBase
                 'type'        => 'checkbox',
                 'default'     => 0,
             ],
+            'displayAsMenu' => [
+                'title'       => 'codalia.bookend::lang.settings.category_display_as_menu',
+                'description' => 'codalia.bookend::lang.settings.category_display_as_menu_description',
+                'type'        => 'checkbox',
+                'default'     => 0,
+            ],
       ];
     }
 
@@ -56,6 +62,7 @@ class Categories extends ComponentBase
     {
 	$this->currentCategorySlug = $this->page['currentCategorySlug'] = $this->property('slug');
 	$this->categories = $this->page['categories'] = $this->loadCategories();
+	$this->page['displayAsMenu'] = $this->property('displayAsMenu');
     }
 
     /**

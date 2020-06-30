@@ -114,6 +114,8 @@ return [
       'category_slug_description' => "Look up the book category using the supplied slug value. This property is used by the default component partial for marking the currently active category.",
       'category_display_empty' => 'Display empty categories',
       'category_display_empty_description' => 'Show categories that do not have any books.',
+      'category_display_as_menu' => 'Display categories as a menu',
+      'category_display_as_menu_description' => 'Display categories as a menu',
       'category_page' => 'Category page',
       'category_page_description' => 'Name of the category page file for the category links. This property is used by the default component partial.',
       'group_links' => 'Links',

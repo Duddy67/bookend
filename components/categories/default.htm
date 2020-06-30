@@ -1,10 +1,19 @@
 {% if __SELF__.categories|length > 0 %}
+  {% if displayAsMenu %}
+    <ul class="category-list">
+        {% partial __SELF__ ~ "::menuitems"
+            categories = __SELF__.categories
+            currentCategorySlug = __SELF__.currentCategorySlug
+        %}
+    </ul>
+  {% else %}
     <ul class="category-list">
         {% partial __SELF__ ~ "::items"
             categories = __SELF__.categories
             currentCategorySlug = __SELF__.currentCategorySlug
         %}
     </ul>
+  {% endif %}
 {% else %}
     <p>No categories were found.</p>
 {% endif %}
