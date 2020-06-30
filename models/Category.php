@@ -170,6 +170,18 @@ class Category extends Model
      */
     public function filterFields($fields, $context = null)
     {
+        if ($context == 'create') {
+	    $fields->created_at->hidden = true;
+	    $fields->updated_at->hidden = true;
+	}
+
+        if ($context == 'update') {
+	  // The item has just been created. Don't display the update field. 
+	  if (strcmp($fields->created_at->value->toDateTimeString(), $fields->updated_at->value->toDateTimeString()) === 0) {
+	      $fields->updated_at->cssClass = 'hidden';
+	  }
+	}
+
         if ($this->parent && $this->parent->attributes['status'] == 'unpublished') {
 	    $fields->status->cssClass = 'hidden';
             $fields->parent->cssClass = 'hidden';

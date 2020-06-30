@@ -53,7 +53,6 @@ fields:
         label: codalia.bookend::lang.attribute.created_at
         type: datepicker
         mode: datetime
-        context: [update]
         disabled: true
         span: left
 
@@ -61,7 +60,6 @@ fields:
         label: codalia.bookend::lang.attribute.updated_at
         type: datepicker
         mode: datetime
-        context: [update]
         disabled: true
         span: left
 

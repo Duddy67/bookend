@@ -337,7 +337,15 @@ class Book extends Model
 	    $fields->usergroup->hidden = true;
 	}
 
+        if ($context == 'create') {
+	    // The item is about to be created. These field values are not known yet.
+	    $fields->created_at->hidden = true;
+	    $fields->updated_at->hidden = true;
+	    $fields->_updated_by_field->hidden = true;
+	}
+
         if ($context == 'update') {
+	  // The item has just been created. Don't display the updating fields. 
 	  if (strcmp($fields->created_at->value->toDateTimeString(), $fields->updated_at->value->toDateTimeString()) === 0) {
 	      $fields->updated_at->cssClass = 'hidden';
 	      $fields->_updated_by_field->cssClass = 'hidden';

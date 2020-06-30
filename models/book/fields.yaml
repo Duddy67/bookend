@@ -91,7 +91,6 @@ secondaryTabs:
             span: left
             type: datepicker
             mode: datetime
-            context: [update]
             disabled: true
 
         updated_at:
@@ -100,7 +99,6 @@ secondaryTabs:
             span: right
             type: datepicker
             mode: datetime
-            context: [update]
             disabled: true
 
         user:
@@ -124,7 +122,6 @@ secondaryTabs:
             tab: codalia.bookend::lang.attribute.tab_manage
             label: codalia.bookend::lang.attribute.updated_by
             span: right
-            context: [update]
             disabled: true
 
         id:
