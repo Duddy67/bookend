@@ -147,7 +147,9 @@ class Books extends Controller
 
 	      $book->status = $status;
 	      $book->published_up = Book::setPublishingDate($book);
-	      $book->save();
+	      // Important: Do not use the save() or update() methods here as the events (afterSave etc...) will be 
+	      //            triggered as well and may have unexpected behaviors.
+	      \Db::table('codalia_bookend_books')->where('id', $recordId)->update(['status' => $status,
 	  }
 
 	  $toRemove = ($status == 'archived') ? 'd' : 'ed';

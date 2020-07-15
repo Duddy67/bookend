@@ -342,6 +342,7 @@ class Book extends Model
 	    $fields->created_at->hidden = true;
 	    $fields->updated_at->hidden = true;
 	    $fields->_updated_by_field->hidden = true;
+	    $fields->id->hidden = true;
 	}
 
         if ($context == 'update') {

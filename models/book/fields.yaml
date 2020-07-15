@@ -128,7 +128,6 @@ secondaryTabs:
             tab: codalia.bookend::lang.attribute.tab_manage
             label: ID
             span: left
-            context: [update]
             disabled: true
 
 

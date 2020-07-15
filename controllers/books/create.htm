@@ -21,7 +21,7 @@
                     data-hotkey="ctrl+s, cmd+s"
                     data-load-indicator="Creating Book..."
                     class="btn btn-primary">
-                    Create
+		    <?= e(trans('codalia.bookend::lang.action.create')) ?>
                 </button>
                 <button
                     type="button"
@@ -30,7 +30,7 @@
                     data-hotkey="ctrl+enter, cmd+enter"
                     data-load-indicator="Creating Book..."
                     class="btn btn-default">
-                    Create and Close
+		    <?= e(trans('codalia.bookend::lang.action.create_and_close')) ?>
                 </button>
                 <span class="btn-text">
                     or <a href="<?= Backend::url('codalia/bookend/books') ?>">Cancel</a>

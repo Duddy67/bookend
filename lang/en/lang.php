@@ -77,6 +77,8 @@ return [
       'delete' => 'Delete',
       'save' => 'Save',
       'save_and_close' => 'Save and close',
+      'create' => 'Create',
+      'create_and_close' => 'Create and close',
       'cancel' => 'Cancel',
       'check_in' => 'Check-in',
       'publish_success' => 'Successfully published those items.',

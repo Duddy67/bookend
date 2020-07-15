@@ -69,7 +69,7 @@ class Plugin extends PluginBase
 	        $data = post();  
 		// Ensures the page file names for categories fit the correct pattern.
 		if ($data['templateType'] == 'page' &&
-		    in_array('bookList', $data['component_names']) &&
+		    isset($data['component_names']) && in_array('bookList', $data['component_names']) &&
 		    !preg_match('#^category-level-[0-9]+\.htm$#', $data['fileName'])) {
 		    throw new \ApplicationException(\Lang::get('codalia.bookend::lang.settings.invalid_file_name'));
 		}
