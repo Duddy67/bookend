@@ -83,7 +83,7 @@ class Category extends Model
     public $belongsToMany = [
       'books' => ['Codalia\Bookend\Models\Book',
 	  'table' => 'codalia_bookend_categories_books',
-	  'order' => 'published_at desc',
+	  'order' => 'created_at desc',
 	  //'scope' => 'isPublished'
       ],
       'books_count' => ['Codalia\Bookend\Models\Book',

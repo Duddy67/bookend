@@ -74,6 +74,39 @@ class Categories extends Controller
 	}
     }
 
+    public function index_onDelete()
+    {
+	// Needed for the status column partial.
+	$this->vars['statusIcons'] = BookendHelper::instance()->getStatusIcons();
+
+	if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
+
+            foreach ($checkedIds as $recordId) {
+	        // Checks that book does exist and the current user has the required access levels.
+                if ((!$category = Category::find($recordId))) {
+                    continue;
+                }
+
+		if ($category->checked_out) {
+		    Flash::warning(Lang::get('codalia.bookend::lang.action.checked_out_item', ['name' => $category->name]));
+		    return;
+		}
+
+		// Checks if the category is set as main category in a book.
+		if ($category->books()->where('codalia_bookend_books.category_id', $recordId)->first()) {
+		    Flash::warning(Lang::get('codalia.bookend::lang.action.used_as_main_category', ['name' => $category->name]));
+		    return;
+		}
+
+                $category->delete();
+            }
+
+            Flash::success(Lang::get('codalia.bookend::lang.action.delete_success'));
+         }
+
+        return $this->listRefresh();
+    }
+
     public function index_onSetStatus()
     {
 	// Needed for the status column partial.

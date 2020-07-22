@@ -116,9 +116,19 @@ class Books extends Controller
 
             foreach ($checkedIds as $recordId) {
 	        // Checks that book does exist and the current user has the required access levels.
-                if ((!$book = Book::find($recordId)) || !$book->canEdit($this->user) || $book->checked_out) {
+                if (!$book = Book::find($recordId)) {
                     continue;
                 }
+
+		if (!$book->canEdit($this->user)) {
+		    Flash::error(Lang::get('codalia.bookend::lang.action.not_allowed_to_modify_item', ['name' => $book->title]));
+		    return;
+		}
+
+		if ($book->checked_out) {
+		    Flash::warning(Lang::get('codalia.bookend::lang.action.checked_out_item', ['name' => $book->title]));
+		    return;
+		}
 
                 $book->delete();
             }
@@ -150,6 +160,7 @@ class Books extends Controller
 	      // Important: Do not use the save() or update() methods here as the events (afterSave etc...) will be 
 	      //            triggered as well and may have unexpected behaviors.
 	      \Db::table('codalia_bookend_books')->where('id', $recordId)->update(['status' => $status,
+										   'published_up' => Book::setPublishingDate($book)]);
 	  }
 
 	  $toRemove = ($status == 'archived') ? 'd' : 'ed';
