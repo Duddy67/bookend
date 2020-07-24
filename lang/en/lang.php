@@ -3,7 +3,7 @@
 return [
     'plugin' => [
         'name' => 'Bookend',
-        'description' => ''
+        'description' => 'A simple plugin used to manage books.'
     ],
     'bookend' => [
       'books' => 'Books',
@@ -81,12 +81,12 @@ return [
       'create_and_close' => 'Create and close',
       'cancel' => 'Cancel',
       'check_in' => 'Check-in',
-      'publish_success' => 'Successfully published those items.',
-      'unpublish_success' => 'Successfully unpublished those items.',
-      'archive_success' => 'Successfully archived those items.',
-      'trash_success' => 'Successfully trashed those items.',
-      'delete_success' => 'Successfully deleted those items.',
-      'check_in_success' => 'Successfully checked in those items.',
+      'publish_success' => ':count item(s) successfully published.',
+      'unpublish_success' => ':count item(s) successfully unpublished.',
+      'archive_success' => ':count item(s) successfully archived.',
+      'trash_success' => ':count item(s) successfully trashed.',
+      'delete_success' => ':count item(s) successfully deleted.',
+      'check_in_success' => ':count item(s) successfully checked-in.',
       'parent_item_unpublished' => 'Cannot publish this item as its parent item is unpublished.',
       'previous' => 'Previous',
       'next' => 'Next',
@@ -163,7 +163,7 @@ return [
     'global_settings' => [
       'tab_general' => 'General',
       'max_characters' => 'Max characters',
-      'max_characters_comment' => 'Max characters',
+      'max_characters_comment' => 'The maximum number of characters to display in category view',
       'show_breadcrumb_label' => 'Show breadcrumb',
       'show_breadcrumb_comment' => 'Show a breadcrumb in book and category views.',
     ],

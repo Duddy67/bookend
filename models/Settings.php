@@ -13,7 +13,6 @@ class Settings extends Model
     public $settingsFields = 'fields.yaml';
 
     public $rules = [
-        'show_all_books' => ['boolean'],
         'show_breadcrumb' => ['boolean'],
     ];
 }

@@ -25,7 +25,7 @@ class Plugin extends PluginBase
     {
         return [
             'name'        => 'Bookend',
-            'description' => 'A simple note book used for books.',
+            'description' => 'A simple plugin used to managed books.',
             'author'      => 'codalia',
             'icon'        => 'icon-book'
         ];

@@ -113,7 +113,7 @@ class Books extends Controller
 	$this->vars['statusIcons'] = BookendHelper::instance()->getStatusIcons();
 
 	if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
-
+            $count = 0;
             foreach ($checkedIds as $recordId) {
 	        // Checks that book does exist and the current user has the required access levels.
                 if (!$book = Book::find($recordId)) {
@@ -131,9 +131,11 @@ class Books extends Controller
 		}
 
                 $book->delete();
+
+		$count++;
             }
 
-            Flash::success(Lang::get('codalia.bookend::lang.action.delete_success'));
+            Flash::success(Lang::get('codalia.bookend::lang.action.delete_success', ['count' => $count]));
          }
 
         return $this->listRefresh();
@@ -147,11 +149,12 @@ class Books extends Controller
 	// Ensures one or more items are selected.
 	if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
 	  $status = post('status');
+	  $count = 0;
 	  foreach ($checkedIds as $recordId) {
 	      $book = Book::find($recordId);
 
 	      if ($book->checked_out) {
-		  Flash::error(Lang::get('codalia.bookend::lang.action.checked_out_item'));
+		  Flash::error(Lang::get('codalia.bookend::lang.action.checked_out_item', ['name' => $book->title]));
 		  return $this->listRefresh();
 	      }
 
@@ -161,11 +164,12 @@ class Books extends Controller
 	      //            triggered as well and may have unexpected behaviors.
 	      \Db::table('codalia_bookend_books')->where('id', $recordId)->update(['status' => $status,
 										   'published_up' => Book::setPublishingDate($book)]);
+	      $count++;
 	  }
 
 	  $toRemove = ($status == 'archived') ? 'd' : 'ed';
 
-	  Flash::success(Lang::get('codalia.bookend::lang.action.'.rtrim($status, $toRemove).'_success'));
+	  Flash::success(Lang::get('codalia.bookend::lang.action.'.rtrim($status, $toRemove).'_success', ['count' => $count]));
 	}
 
 	return $this->listRefresh();
@@ -178,11 +182,13 @@ class Books extends Controller
 
 	// Ensures one or more items are selected.
 	if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
+	  $count = 0;
 	  foreach ($checkedIds as $recordId) {
 	      BookendHelper::instance()->checkIn((new Book)->getTable(), null, $recordId);
+	      $count++;
 	  }
 
-	  Flash::success(Lang::get('codalia.bookend::lang.action.check_in_success'));
+	  Flash::success(Lang::get('codalia.bookend::lang.action.check_in_success', ['count' => $count]));
 	}
 
 	return $this->listRefresh();
