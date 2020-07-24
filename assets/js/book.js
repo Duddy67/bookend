@@ -25,6 +25,19 @@
     });
   });
 
+  $(document).ready(function() {
+      // Shows the active tab on page reload.
+      $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+	  localStorage.setItem('activeTab', $(e.target).attr('href'));
+      });
+
+      var activeTab = localStorage.getItem('activeTab');
+
+      if(activeTab){
+	  $('.nav-tabs a[href="' + activeTab + '"]').tab('show');
+      }
+  });
+
   $.fn.setMainCategory = function() {
     let mainCategoryId = $('#Form-field-Book-category').val();
     // Loops through the checkbox inputs.
