@@ -92,11 +92,10 @@ return [
       'next' => 'Next',
       'deletion_confirmation' => 'Are you sure you want to delete the selected items ?',
       'cannot_reorder' => 'Cannot reorder items by category as none or more than 1 categories are selected. Please select only 1 category.',
-      'checked_out_item' => 'This item cannot be modified as it\'s checked out. Please ensure no one is editing this item.',
       'check_out_do_not_match' => 'The user checking out doesn\'t match the user who checked out the item. You are not permitted to use that link to directly access that page.',
       'editing_not_allowed' => 'You are not allowed to edit this item.',
       'used_as_main_category' => 'The ":name" category cannot be deleted as it is used as main category in one or more books.',
-      'checked_out_item' => 'The ":name" item cannot be deleted as it is currently checked out by a user.',
+      'checked_out_item' => 'The ":name" item cannot be modified as it is currently checked out by a user.',
       'not_allowed_to_modify_item' => 'You are not allowed to modify the ":name" item.',
     ],
     'sorting' => [
