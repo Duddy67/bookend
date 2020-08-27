@@ -69,7 +69,7 @@ class Featured extends ComponentBase
                 'title'       => 'codalia.bookend::lang.settings.books_pagination',
                 'description' => 'codalia.bookend::lang.settings.books_pagination_description',
                 'type'        => 'string',
-                'default'     => '{{ :page? }}'
+                'default'     => '{{ :page }}'
             ],
             'categoryId' => [
                 'title'       => 'codalia.bookend::lang.settings.featured_id',
