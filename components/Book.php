@@ -34,6 +34,12 @@ class Book extends ComponentBase
                 'default'     => '{{ :slug }}',
                 'type'        => 'string',
             ],
+	    'categoryPath' => [
+                'title'       => 'codalia.journal::lang.settings.category_path',
+                'description' => 'codalia.journal::lang.settings.category_path_description',
+                'default'     => '{{ :category-path }}',
+                'type'        => 'string',
+            ],
         ];
     }
 
@@ -83,15 +89,16 @@ class Book extends ComponentBase
     public function onRun()
     {
         $this->book = $this->page['book'] = $this->loadBook();
-	$this->addCss(url('plugins/codalia/bookend/assets/css/breadcrumb.css'));
+
+        if ($this->book === null || $this->book->category->status != 'published') {
+            return \Redirect::to(404);
+        }
 
 	if (!$this->book->canView()) {
 	    return \Redirect::to(403);
 	}
 
-	if ($this->book->category->status != 'published') {
-	    return \Redirect::to(404);
-	}
+	$this->addCss(url('plugins/codalia/bookend/assets/css/breadcrumb.css'));
     }
 
     public function onRender()
@@ -116,23 +123,39 @@ class Book extends ComponentBase
 	    $query->where('status', 'published');
         }]);
 
-        try {
-            $book = $book->firstOrFail();
-        } catch (ModelNotFoundException $ex) {
-            $this->setStatusCode(404);
-            return $this->controller->run('404');
+	if (($book = $book->first()) === null) {
+	    return null;
         }
 
         // Add a "url" helper attribute for linking to the main category.
 	$book->category->setUrl($this->controller);
+	$urls = [];
 
         /*
          * Add a "url" helper attribute for linking to each extra category
          */
         if ($book && $book->categories->count()) {
-            $book->categories->each(function($category, $key) use($book) {
-		$category->setUrl($this->controller);
+            $book->categories->each(function($category, $key) use(&$urls) {
+		$url = $category->setUrl($this->controller);
+		$segments = explode('/', $url);
+		// Computes the index of the first category segment.
+		$index = count($segments) - ($category->nest_depth + 1);
+		$path = '';
+
+		// Builds the path for this category.
+		for ($i = $index; $i < count($segments); $i++) {
+		    $path .= $segments[$i].'/';
+		}
+
+                // Removes slash from the end of the string.
+		$path = substr($path, 0, -1);
+		$urls[] = $path;
             });
+	}
+
+	// Checks the given category path.
+        if (!in_array($this->property('categoryPath'), $urls)) {
+	    return null;
 	}
 
 	// Builds the canonical link to the book based on the main category of the book.
