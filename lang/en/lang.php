@@ -127,6 +127,8 @@ return [
       'book_description' => 'Displays a book on the page.',
       'book_slug' => 'Book slug',
       'book_slug_description' => "Look up the book using the supplied slug value.",
+      'category_path' => 'Category path',
+      'category_path_description' => 'Used to ensure that the given category path exists.',
       'book_category' => 'Category page',
       'book_category_description' => 'Name of the category page file for the category links. This property is used by the default component partial.',
       'books_title' => 'Book List',

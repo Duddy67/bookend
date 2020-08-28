@@ -35,8 +35,8 @@ class Book extends ComponentBase
                 'type'        => 'string',
             ],
 	    'categoryPath' => [
-                'title'       => 'codalia.journal::lang.settings.category_path',
-                'description' => 'codalia.journal::lang.settings.category_path_description',
+                'title'       => 'codalia.bookend::lang.settings.category_path',
+                'description' => 'codalia.bookend::lang.settings.category_path_description',
                 'default'     => '{{ :category-path }}',
                 'type'        => 'string',
             ],
