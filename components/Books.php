@@ -194,6 +194,11 @@ class Books extends ComponentBase
     {
         $this->prepareVars();
         $this->category = $this->page['category'] = $this->loadCategory();
+
+        if ($this->category === null) {
+            return \Redirect::to(404);
+        }
+
         $this->books = $this->page['books'] = $this->listBooks();
 	$this->addCss(url('plugins/codalia/bookend/assets/css/breadcrumb.css'));
 
@@ -287,8 +292,33 @@ class Books extends ComponentBase
             ? $category->transWhere('slug', $slug)
 	    : $category->where('slug', $slug);
 
-        $category = $category->first();
+	if (($category = $category->first()) === null) {
+	    return null;
+        }
 
-        return $category ?: null;
+	$path = [];
+	$i = 1;
+
+	// Builds the category path (if any).
+	while ($this->param('parent-'.$i)) {
+	    $path[] = $this->param('parent-'.$i);
+	    $i++;
+	}
+
+	if (!empty($path)) {
+	    $path = array_reverse($path);
+	    $parent = $category;
+
+	    // Goes up to the root parent.
+	    foreach ($path as $segment) {
+	        $parent = $parent->getParent()->first();
+                // Checks against the given path segment.
+		if ($parent->slug != $segment) {
+		    return null;
+		}
+	    }
+	}
+
+        return $category;
     }
 }
