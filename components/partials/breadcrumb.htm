@@ -1,17 +1,14 @@
 {% set url = url('/') ~ '/' ~ prefix %}
 
-<div style="padding: 20px">
-    <div class="control-breadcrumb">
-        <ul>
-	    <li><a href="{{ url('/') }}">Home</a></li>
-	    {% for item in path %}
-		{% if loop.last %}
-		    <li>{{ item.name }}</li>
-		{% else %}
-		    <li><a href="{{ item.url }}">{{ item.name }}</a></li>
-		{% endif %}
-	    {% endfor %}
-        </ul>
-    </div>
+<div class="control-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
+        {% for item in path %}
+            {% if loop.last %}
+                <li class="breadcrumb-item active">{{ item.name }}</li>
+            {% else %}
+                <li class="breadcrumb-item"><a href="{{ item.url }}">{{ item.name }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ol>
 </div>
-

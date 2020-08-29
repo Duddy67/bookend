@@ -34,12 +34,6 @@ class Book extends ComponentBase
                 'default'     => '{{ :slug }}',
                 'type'        => 'string',
             ],
-	    'categoryPath' => [
-                'title'       => 'codalia.bookend::lang.settings.category_path',
-                'description' => 'codalia.bookend::lang.settings.category_path_description',
-                'default'     => '{{ :category-path }}',
-                'type'        => 'string',
-            ],
         ];
     }
 
@@ -154,7 +148,7 @@ class Book extends ComponentBase
 	}
 
 	// Checks the given category path.
-        if (!in_array($this->property('categoryPath'), $urls)) {
+        if ($this->param('category-path') && !in_array($this->param('category-path'), $urls)) {
 	    return null;
 	}
 
@@ -164,7 +158,8 @@ class Book extends ComponentBase
 	$params = ['id' => $book->id, 'slug' => $book->slug, 'category' => $path];
 	$book->canonical = $this->controller->pageUrl($bookPage, $params);
 
-	if (Settings::get('show_breadcrumb')) {
+	// Doesn't display the breadcrumb if the category path is not used.
+	if ($this->param('category-path') && Settings::get('show_breadcrumb')) {
 	    $book->breadcrumb = $this->getBreadcrumb($book);
 	}
 
