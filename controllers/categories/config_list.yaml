@@ -12,7 +12,7 @@ modelClass: Codalia\Bookend\Models\Category
 title: Manage Categories
 
 # Link URL for each record
-recordUrl: codalia/bookend/categories/update/:id/edit
+recordUrl: codalia/bookend/categories/update/:id
 
 # Message to display if the list is empty
 noRecordsMessage: backend::lang.list.no_records

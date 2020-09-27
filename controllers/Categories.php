@@ -41,25 +41,6 @@ class Categories extends Controller
         $this->asExtension('ListController')->index();
     }
 
-    public function update($recordId = null, $context = null)
-    {
-	$category = Category::find($recordId);
-	$user = BackendAuth::getUser();
-
-	// Checks for check out matching.
-	if ($category->checked_out && $user->id != $category->checked_out) {
-	    Flash::error(Lang::get('codalia.bookend::lang.action.check_out_do_not_match'));
-	    return redirect('backend/codalia/bookend/categories');
-	}
-
-        if ($context == 'edit') {
-	    // Locks the item for this user.
-	    BookendHelper::instance()->checkOut((new Category)->getTable(), $user, $recordId);
-	}
-
-        return $this->asExtension('FormController')->update($recordId, $context);
-    }
-
     public function listOverrideColumnValue($record, $columnName, $definition = null)
     {
         if ($record->checked_out && $columnName == 'name') {

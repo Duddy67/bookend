@@ -7,9 +7,16 @@ use RainLab\User\Models\User as UserModel;
 use RainLab\User\Controllers\Users as UsersController;
 use RainLab\User\Models\UserGroup;
 use Codalia\Bookend\Models\Book;
+use Codalia\Bookend\Controllers\Books as BooksController;
+use Codalia\Bookend\Models\Category;
+use Codalia\Bookend\Controllers\Categories as CategoriesController;
+use Codalia\Bookend\Helpers\BookendHelper;
 use Backend\FormWidgets\Relation;
 use Event;
 use Db;
+use BackendAuth;
+use Lang;
+use Flash;
 
 /**
  * bookend Plugin Information File
@@ -48,6 +55,35 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
+	Event::listen('backend.page.beforeDisplay', function ($controller, $action, $params) {
+            // Only for specific controllers.
+            if (!$controller instanceof BooksController && !$controller instanceof CategoriesController) {
+                return;
+	    }
+
+	    $classMap = $this->getClassMaps(get_class($controller));
+
+	    if ($action == 'update') {
+                $item = $controller->formFindModelObject($params[0]);
+		$user = BackendAuth::getUser();
+
+		// Checks for permissions.
+		if ($classMap['model'] == 'Codalia\Bookend\Models\Book' && !$item->canEdit($user)) {
+		    Flash::error(Lang::get('codalia.bookend::lang.action.editing_not_allowed'));
+		    return redirect($classMap['redirect']);
+		}
+
+		// Checks for check out matching.
+		if ($item->checked_out && $user->id != $item->checked_out) {
+		    Flash::error(Lang::get('codalia.bookend::lang.action.check_out_do_not_match'));
+		    return redirect($classMap['redirect']);
+		}
+
+                // Locks the item for this user.
+                BookendHelper::instance()->checkOut((new $classMap['model'])->getTable(), $user, $params[0]);
+	    }
+	});
+
 	BackendUserModel::extend(function ($model) {
 	    $model->hasMany['books'] = ['Codalia\Bookend\Models\Book', 'key' => 'created_by'];
 	});
@@ -75,6 +111,21 @@ class Plugin extends PluginBase
 		}
 	    });
 	});
+    }
+
+    /**
+     * Returns the needed update variables for a given class.
+     *
+     * @return array
+     */
+    protected function getClassMaps($className)
+    {
+	$classMaps = ['Codalia\Bookend\Controllers\Books' =>
+			 ['model' => 'Codalia\Bookend\Models\Book', 'redirect' => 'backend/codalia/bookend/books'],
+		      'Codalia\Bookend\Controllers\Categories' =>
+			 ['model' => 'Codalia\Bookend\Models\Category', 'redirect' => 'backend/codalia/bookend/categories']];
+
+	return $classMaps[$className];
     }
 
     /**

@@ -12,7 +12,7 @@ modelClass: Codalia\Bookend\Models\Book
 title: Manage Books
 
 # Link URL for each record
-recordUrl: codalia/bookend/books/update/:id/edit
+recordUrl: codalia/bookend/books/update/:id
 
 # Message to display if the list is empty
 noRecordsMessage: backend::lang.list.no_records

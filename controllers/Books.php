@@ -52,31 +52,6 @@ class Books extends Controller
 	return $this->asExtension('FormController')->create();
     }
 
-    public function update($recordId = null, $context = null)
-    {
-	$book = Book::find($recordId);
-	$user = BackendAuth::getUser();
-
-	// Checks for permissions.
-	if (!$book->canEdit($user)) {
-	    Flash::error(Lang::get('codalia.bookend::lang.action.editing_not_allowed'));
-	    return redirect('backend/codalia/bookend/books');
-	}
-
-	// Checks for check out matching.
-	if ($book->checked_out && $user->id != $book->checked_out) {
-	    Flash::error(Lang::get('codalia.bookend::lang.action.check_out_do_not_match'));
-	    return redirect('backend/codalia/bookend/books');
-	}
-
-        if ($context == 'edit') {
-	    // Locks the item for this user.
-	    BookendHelper::instance()->checkOut((new Book)->getTable(), $user, $recordId);
-	}
-
-        return $this->asExtension('FormController')->update($recordId, $context);
-    }
-
     public function listOverrideColumnValue($record, $columnName, $definition = null)
     {
         if ($record->checked_out && $columnName == 'title') {
