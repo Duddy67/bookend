@@ -55,7 +55,7 @@ class Books extends Controller
     public function listOverrideColumnValue($record, $columnName, $definition = null)
     {
         if ($record->checked_out && $columnName == 'title') {
-	    return BookendHelper::instance()->getCheckInHtml($record, BackendAuth::findUserById($record->checked_out));
+	    return BookendHelper::instance()->getCheckInHtml($record, BackendAuth::findUserById($record->checked_out), $record->title);
 	}
     }
 

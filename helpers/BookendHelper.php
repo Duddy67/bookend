@@ -58,14 +58,14 @@ class BookendHelper
      *
      * @param objects record$
      * @param User    $user
+     * @param string  $columnValue
      *
      * @return string
      */
-    public function getCheckInHtml($record, $user)
+    public function getCheckInHtml($record, $user, $columnValue)
     {
 	$userName = $user->first_name.' '.$user->last_name;
-	$itemName = (isset($record->name)) ? $record->name : $record->title; 
-	$html = '<div class="checked-out">'.$itemName.'<span class="lock"></span></div>';
+	$html = '<div class="checked-out">'.$columnValue.'<span class="lock"></span></div>';
 	$html .= '<div class="check-in"><p class="user-check-in">'.$userName.'</p>'.Backend::dateTime($record->checked_out_time).'</div>';
 
 	return $html;
