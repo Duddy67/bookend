@@ -6,7 +6,7 @@ use Lang;
 use Backend\Classes\Controller;
 use Backend\Behaviors\ReorderController;
 use Codalia\Bookend\Controllers\Books;
-use Codalia\Journal\Helpers\JournalHelper;
+use Codalia\Bookend\Helpers\BookendHelper;
 
 /**
  * Orderings Back-end Controller
@@ -28,7 +28,7 @@ class Orderings extends Controller
 
     public function reorder()
     {
-	$this->vars['statusIcons'] = JournalHelper::instance()->getStatusIcons();
+	$this->vars['statusIcons'] = BookendHelper::instance()->getStatusIcons();
 	$this->addCss(url('plugins/codalia/bookend/assets/css/extra.css'));
 
         $this->asExtension('ReorderController')->reorder();
