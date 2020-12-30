@@ -56,6 +56,14 @@
 	$(input).removeClass('main-category');
       }
     });
-  }
+  },
 
+  $.fn.refreshFields = function(fields) {
+    // Refreshes the updated_at field.
+    $('#Form-field-Book-updated_at').val(fields.updated_at.datetime_utc);
+    let date = moment(fields.updated_at.datetime).format(fields.updated_at.date_format);
+    let time = moment(fields.updated_at.datetime).format(fields.updated_at.time_format);
+    $('#DatePicker-formUpdatedAt-date-updated_at').val(date);
+    $('#DatePicker-formUpdatedAt-time-updated_at').val(time);
+  }
 })(jQuery);

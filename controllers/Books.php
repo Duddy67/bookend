@@ -172,6 +172,18 @@ class Books extends Controller
     public function update_onSave($recordId = null, $context = null)
     {
 	// Calls the original update_onSave method
-	return $this->asExtension('FormController')->update_onSave($recordId, $context);
+	if ($redirect = $this->asExtension('FormController')->update_onSave($recordId, $context)) {
+	    return $redirect;
+	}
+
+	// Prepares the value of the fields to be refreshed.
+
+	$book = Book::find($recordId);
+	$form = $this->formGetWidget();
+	$fields = [];
+
+	$fields['updated_at'] = BookendHelper::instance()->getUpdatedDatetimeAttributes($form->getField('updated_at'), $book->attributes['updated_at']);
+
+	return $fields;
     }
 }

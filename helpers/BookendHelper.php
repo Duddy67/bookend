@@ -5,7 +5,9 @@ use Carbon\Carbon;
 use Backend;
 use Flash;
 use Db;
+use App;
 use Codalia\Bookend\Models\Category;
+use System\Helpers\DateTime as DateTimeHelper;
 
 
 class BookendHelper
@@ -116,5 +118,32 @@ class BookendHelper
 	}
 
 	return $breadcrumb;
+    }
+
+    /*
+     * Returns the datetime field attributes after being updated.
+     *
+     * @param object  $field
+     * @param string  $newDatetime (in MySQL format)
+     *
+     * @return array
+     */
+    public function getUpdatedDatetimeAttributes($field, $newDatetime)
+    {
+        $attributes = ['date_format' => 'L', 'time_format' => 'HH:mm', 'datetime' => $newDatetime, 'datetime_utc' => $newDatetime];
+
+	if (isset($field->config['format']) && $field->config['format']) {
+	    $attributes['date_format'] = DateTimeHelper::momentFormat($field->config['format']);
+	}
+
+	if (!isset($field->config['ignoreTimezone']) || !$field->config['ignoreTimezone']) {
+	    // Gets the current timezone.
+	    $config = App::make('config');
+	    $timezone = $config->get('cms.backendTimezone', $config->get('app.timezone'));
+	    $date = Carbon::createFromFormat('Y-m-d H:i:s', $newDatetime);
+	    $attributes['datetime'] = $date->setTimezone($timezone)->toDateTimeString();
+	}
+
+	return $attributes;
     }
 }

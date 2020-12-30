@@ -16,9 +16,10 @@
         <div class="form-buttons">
             <div class="loading-indicator-container">
                 <button
-                    type="submit"
+                    type="button"
                     data-request="onSave"
-                    data-request-data="redirect:1"
+                    data-request-data="redirect:0"
+		    data-request-success="$.fn.refreshFields(data);"
                     data-hotkey="ctrl+s, cmd+s"
                     data-load-indicator="Saving Book..."
                     class="btn btn-primary">
