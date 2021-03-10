@@ -19,21 +19,20 @@
                     type="button"
                     data-request="onSave"
                     data-request-data="redirect:0"
-		    data-request-success="$.fn.refreshFields(data);"
                     data-hotkey="ctrl+s, cmd+s"
-                    data-load-indicator="Saving Book..."
                     class="btn btn-primary">
 		    <?= e(trans('codalia.bookend::lang.action.save')) ?>
                 </button>
+
                 <button
                     type="button"
                     data-request="onSave"
                     data-request-data="close:1"
                     data-hotkey="ctrl+enter, cmd+enter"
-                    data-load-indicator="Saving Book..."
                     class="btn btn-default">
 		    <?= e(trans('codalia.bookend::lang.action.save_and_close')) ?>
                 </button>
+
 		<?php if ($this->user->hasAccess('codalia.bookend.access_delete')): ?>
 		  <button
 		      type="button"
@@ -43,9 +42,7 @@
 		      data-request-confirm="Delete this book?">
 		  </button>
 		<?php endif ?>
-                <span class="btn-text">
-		  or <a href="<?= Backend::url('codalia/bookend/books') ?>"><?= e(trans('codalia.bookend::lang.action.cancel')) ?></a>
-                </span>
+		  <a class="btn btn-default" href="<?= Backend::url('codalia/bookend/books') ?>"><?= e(trans('codalia.bookend::lang.action.cancel')) ?></a>
             </div>
         </div>
 

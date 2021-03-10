@@ -24,7 +24,6 @@ secondaryTabs:
         description:
             tab: codalia.bookend::lang.attribute.tab_edit
             type: richeditor
-            stretch: true
 
         category:
             tab: codalia.bookend::lang.book.tab_categories
@@ -46,6 +45,14 @@ secondaryTabs:
             span: left
             type: dropdown
             permissions: codalia.bookend.access_publish
+            cssClass: custom-field-left
+
+        id:
+            tab: codalia.bookend::lang.attribute.tab_manage
+            label: ID
+            span: right
+            disabled: true
+            cssClass: custom-field-right
 
         # Read-only information field for users without publish access.
         _status_field:
@@ -78,7 +85,7 @@ secondaryTabs:
             label: codalia.bookend::lang.attribute.published_down
             type: datepicker
             mode: datetime
-            span: right
+            span: left
             permissions: codalia.bookend.access_publish
             trigger:
                 action: enable
@@ -95,11 +102,9 @@ secondaryTabs:
 
         updated_at:
             tab: codalia.bookend::lang.attribute.tab_manage
-            label: codalia.bookend::lang.attribute.updated_at
-            span: right
-            type: datepicker
-            mode: datetime
-            disabled: true
+            type: partial
+            span: left
+            path: '$/codalia/bookend/models/book/_updated_at.htm'
 
         user:
             tab: codalia.bookend::lang.attribute.tab_manage
@@ -108,6 +113,7 @@ secondaryTabs:
             type: relation
             select: concat(first_name, ' ', last_name)
             permissions: codalia.bookend.access_other_books
+            cssClass: custom-field-left
 
         # Read-only information field for users without other_books access.
         _created_by_field:
@@ -116,6 +122,7 @@ secondaryTabs:
             span: left
             context: [update]
             disabled: true
+            cssClass: custom-field-left
 
         # Read-only information field.
         _updated_by_field:
@@ -123,12 +130,7 @@ secondaryTabs:
             label: codalia.bookend::lang.attribute.updated_by
             span: right
             disabled: true
-
-        id:
-            tab: codalia.bookend::lang.attribute.tab_manage
-            label: ID
-            span: left
-            disabled: true
+            cssClass: custom-field-right
 
 
 

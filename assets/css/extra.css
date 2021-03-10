@@ -75,3 +75,14 @@ div.checked-out >span.lock:before {
 .user-check-in {
   margin-bottom: 0;
 }
+
+.custom-field-left,
+.custom-field-right {
+  width: 23.5% !important;
+}
+
+.custom-field-right {
+  float: left !important;
+  margin-left: 28px !important;
+}
+

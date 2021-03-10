@@ -177,13 +177,8 @@ class Books extends Controller
 	}
 
 	// Prepares the value of the fields to be refreshed.
+	$fieldMarkup = $this->formRenderField('updated_at', ['useContainer' => false]);
 
-	$book = Book::find($recordId);
-	$form = $this->formGetWidget();
-	$fields = [];
-
-	$fields['updated_at'] = BookendHelper::instance()->getUpdatedDatetimeAttributes($form->getField('updated_at'), $book->attributes['updated_at']);
-
-	return $fields;
+	return ['#partial-updatedAt' => $fieldMarkup];
     }
 }
