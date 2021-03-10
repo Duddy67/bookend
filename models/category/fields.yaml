@@ -22,19 +22,22 @@ fields:
         label: codalia.bookend::lang.attribute.status
         type: dropdown
         span: left
+        cssClass: custom-field-left
 
     # Read-only information field 
     _status_field:
         label: codalia.bookend::lang.attribute.status
         span: left
         disabled: true
+        cssClass: custom-field-left
 
     parent:
         label: codalia.bookend::lang.attribute.parent_category
-        span: left
+        span: right
         type: relation
         nameFrom: name
         emptyOption: codalia.bookend::lang.attribute.none
+        cssClass: custom-field-right
 
     # Read-only information field 
     _parent_field:
@@ -46,7 +49,7 @@ fields:
         label: codalia.bookend::lang.attribute.description
         size: large
         oc.commentPosition: ''
-        span: full
+        span: left
         type: textarea
 
     created_at:
@@ -57,9 +60,8 @@ fields:
         span: left
 
     updated_at:
-        label: codalia.bookend::lang.attribute.updated_at
-        type: datepicker
-        mode: datetime
-        disabled: true
+        tab: codalia.bookend::lang.attribute.tab_manage
+        type: partial
         span: left
+        path: '$/codalia/bookend/models/category/_updated_at.htm'
 

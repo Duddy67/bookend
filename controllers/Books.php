@@ -176,7 +176,7 @@ class Books extends Controller
 	    return $redirect;
 	}
 
-	// Prepares the value of the fields to be refreshed.
+	// Refreshes the field(s).
 	$fieldMarkup = $this->formRenderField('updated_at', ['useContainer' => false]);
 
 	return ['#partial-updatedAt' => $fieldMarkup];

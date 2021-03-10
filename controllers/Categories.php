@@ -161,7 +161,7 @@ class Categories extends Controller
 	    return;
 	}
 
-	// Calls the original update_onSave method
+	// Calls the original update_onDelete method
 	return $this->asExtension('FormController')->update_onDelete($recordId);
     }
 
@@ -171,5 +171,18 @@ class Categories extends Controller
 	$this->addCss(url('plugins/codalia/bookend/assets/css/extra.css'));
 
         $this->asExtension('ReorderController')->reorder();
+    }
+
+    public function update_onSave($recordId = null, $context = null)
+    {
+	// Calls the original update_onSave method
+	if ($redirect = $this->asExtension('FormController')->update_onSave($recordId, $context)) {
+	    return $redirect;
+	}
+
+	// Refreshes the field(s).
+	$fieldMarkup = $this->formRenderField('updated_at', ['useContainer' => false]);
+
+	return ['#partial-updatedAt' => $fieldMarkup];
     }
 }
