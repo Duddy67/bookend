@@ -20,6 +20,7 @@
                     data-request="onSave"
                     data-request-data="redirect:0"
                     data-hotkey="ctrl+s, cmd+s"
+		    data-load-indicator="<?= e(trans('codalia.bookend::lang.action.saving')) ?>"
                     class="btn btn-primary">
 		    <?= e(trans('codalia.bookend::lang.action.save')) ?>
                 </button>
@@ -29,6 +30,7 @@
                     data-request="onSave"
                     data-request-data="close:1"
                     data-hotkey="ctrl+enter, cmd+enter"
+		    data-load-indicator="<?= e(trans('codalia.bookend::lang.action.saving')) ?>"
                     class="btn btn-default">
 		    <?= e(trans('codalia.bookend::lang.action.save_and_close')) ?>
                 </button>
@@ -39,7 +41,7 @@
 		      class="oc-icon-trash-o btn-icon danger pull-right"
 		      data-request="onDelete"
 		      data-load-indicator="Deleting Book..."
-		      data-request-confirm="Delete this book?">
+		      data-request-confirm="<?= e(trans('codalia.bookend::lang.action.deletion_confirmation')) ?>">
 		  </button>
 		<?php endif ?>
 		  <a class="btn btn-default" href="<?= Backend::url('codalia/bookend/books') ?>"><?= e(trans('codalia.bookend::lang.action.cancel')) ?></a>

@@ -76,6 +76,7 @@ return [
       'archive' => 'Archive',
       'delete' => 'Delete',
       'save' => 'Save',
+      'saving' => 'Saving...',
       'save_and_close' => 'Save and close',
       'create' => 'Create',
       'create_and_close' => 'Create and close',

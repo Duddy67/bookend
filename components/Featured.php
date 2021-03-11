@@ -96,7 +96,7 @@ class Featured extends ComponentBase
                 'title'       => 'codalia.bookend::lang.settings.books_order',
                 'description' => 'codalia.bookend::lang.settings.books_order_description',
                 'type'        => 'dropdown',
-                'default'     => 'published_at desc'
+                'default'     => 'created_at desc'
             ],
             'bookPage' => [
                 'title'       => 'codalia.bookend::lang.settings.books_book',

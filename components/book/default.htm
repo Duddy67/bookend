@@ -33,7 +33,7 @@ Posted in {% if book.categories.count %},
 	    <a href="{{ category.url }}">{{ category.name }}</a>{% if not loop.last %}, {% endif %}
         {% endfor %}
     {% endif %}
-    on {{ book.published_at|date('M d, Y') }}
+    on {{ book.created_at|date('M d, Y') }}
 </p>
 
 {% set previous, next = __SELF__.previousBook(), __SELF__.nextBook() %}

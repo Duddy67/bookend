@@ -1,7 +1,7 @@
 {% for category in categories %}
     {% set bookCount = category.books_count().count %}
     <li class="dropdown {% if category.slug == currentCategorySlug %}active{% endif %}">
-      <a href="{{ category.url }}">{{ category.name }}</a>
+	<a href="{{ category.url }}">{{ category.name }}</a>
 
         {% if category.children|length > 0 %}
             <ul class="dropdown-menu">

@@ -1,6 +1,6 @@
 <?php Block::put('breadcrumb') ?>
     <ul>
-        <li><a href="<?= Backend::url('codalia/bookend/categories') ?>">Categories</a></li>
+        <li><a href="<?= Backend::url('codalia/bookend/categories') ?>"><?= e(trans('codalia.bookend::lang.bookend.categories')) ?></a></li>
         <li><?= e($this->pageTitle) ?></li>
     </ul>
 <?php Block::endPut() ?>
@@ -20,27 +20,29 @@
                     data-request="onSave"
                     data-request-data="redirect:0"
                     data-hotkey="ctrl+s, cmd+s"
+		    data-load-indicator="<?= e(trans('codalia.bookend::lang.action.saving')) ?>"
                     class="btn btn-primary">
-                    <u>S</u>ave
+		    <?= e(trans('codalia.bookend::lang.action.save')) ?>
                 </button>
+
                 <button
                     type="button"
                     data-request="onSave"
                     data-request-data="close:1"
                     data-hotkey="ctrl+enter, cmd+enter"
+		    data-load-indicator="<?= e(trans('codalia.bookend::lang.action.saving')) ?>"
                     class="btn btn-default">
-                    Save and Close
+		    <?= e(trans('codalia.bookend::lang.action.save_and_close')) ?>
                 </button>
+
                 <button
                     type="button"
                     class="oc-icon-trash-o btn-icon danger pull-right"
                     data-request="onDelete"
                     data-load-indicator="Deleting Category..."
-                    data-request-confirm="Delete this category?">
+                    data-request-confirm="<?= e(trans('codalia.bookend::lang.action.deletion_confirmation')) ?>">
                 </button>
-                <span class="btn-text">
-                    or <a href="<?= Backend::url('codalia/bookend/categories') ?>">Cancel</a>
-                </span>
+		<a class="btn btn-default" href="<?= Backend::url('codalia/bookend/categories') ?>">Cancel</a>
             </div>
         </div>
 
@@ -49,7 +51,7 @@
 <?php else: ?>
 
     <p class="flash-message static error"><?= e($this->fatalError) ?></p>
-    <p><a href="<?= Backend::url('codalia/bookend/categories') ?>" class="btn btn-default">Return to categories list</a></p>
+    <p><a href="<?= Backend::url('codalia/bookend/categories') ?>" class="btn btn-default"><?= e(trans('codalia.bookend::lang.books.return_to_categories')) ?></a></p>
 
 <?php endif ?>
 
