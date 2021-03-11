@@ -19,13 +19,6 @@ class Featured extends ComponentBase
     public $books;
 
     /**
-     * Parameter to use for the page number
-     *
-     * @var string
-     */
-    public $pageParam;
-
-    /**
      * If the book list should be filtered by a category, the model to use
      *
      * @var Model
@@ -65,12 +58,6 @@ class Featured extends ComponentBase
     public function defineProperties()
     {
 	return [
-            'pageNumber' => [
-                'title'       => 'codalia.bookend::lang.settings.books_pagination',
-                'description' => 'codalia.bookend::lang.settings.books_pagination_description',
-                'type'        => 'string',
-                'default'     => '{{ :page }}'
-            ],
             'categoryId' => [
                 'title'       => 'codalia.bookend::lang.settings.featured_id',
                 'description' => 'codalia.bookend::lang.settings.featured_id_description',
@@ -160,18 +147,15 @@ class Featured extends ComponentBase
         /*
          * If the page number is not valid, redirect
          */
-        if ($pageNumberParam = $this->paramName('pageNumber')) {
-            $currentPage = $this->property('pageNumber');
-
-            if ($currentPage > ($lastPage = $this->books->lastPage()) && $currentPage > 1) {
-                return \Redirect::to($this->currentPageUrl([$pageNumberParam => $lastPage]));
+        if ($currentPage = \Request::get('page')) {
+            if ($currentPage > $this->books->lastPage()) {
+                return \Redirect::to($this->currentPageUrl());
             }
-        }
+	}
     }
 
     protected function prepareVars()
     {
-        $this->pageParam = $this->page['pageParam'] = $this->paramName('pageNumber');
         $this->noBooksMessage = $this->page['noBooksMessage'] = $this->property('noBooksMessage');
 
         /*
@@ -183,11 +167,6 @@ class Featured extends ComponentBase
     protected function listBooks()
     {
         $category = $this->category ? $this->category->id : null;
-
-	// Removes the colon before the page number.
-	if ($this->property('pageNumber') && preg_match('#^:([0-9]+)$#', $this->property('pageNumber'), $matches) === 1) {
-	    $this->setProperty('pageNumber', $matches[1]);
-	}
 
         /*
          * List all the books, eager load their categories
@@ -204,7 +183,6 @@ class Featured extends ComponentBase
 	        // Gets published categories only.
 		$query->where('status', 'published');
 	}])->listFrontEnd([
-            'page'             => $this->property('pageNumber'),
             'sort'             => $this->property('sortOrder'),
             'perPage'          => $this->property('booksPerPage'),
             'search'           => trim(input('search')),
