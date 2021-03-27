@@ -9,3 +9,4 @@ In addition to the standard October plugin functionalities, some extra features 
 - Item status system (published / unpublished).
 - Check in / check out system.
 - Breadcrumb
+- A front-end pagination

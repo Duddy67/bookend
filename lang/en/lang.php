@@ -102,6 +102,8 @@ return [
     'sorting' => [
         'title_asc' => 'Title (ascending)',
         'title_desc' => 'Title (descending)',
+        'name_asc' => 'Name (ascending)',
+        'name_desc' => 'Name (descending)',
         'created_asc' => 'Created (ascending)',
         'created_desc' => 'Created (descending)',
         'updated_asc' => 'Updated (ascending)',
