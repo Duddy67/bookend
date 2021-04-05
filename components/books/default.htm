@@ -1,6 +1,5 @@
 {% set books = __SELF__.books %}
 {% set category = __SELF__.category %}
-{% set childrenCategories = __SELF__.childrenCategories %}
 
 {% if category.breadcrumb is not null %}
     {% partial "@breadcrumb" path = category.breadcrumb prefix = category.prefix %}
@@ -14,6 +13,9 @@
     {% partial '@pagination' %}
 </div>
 
-<ul class="category-list">
-{% partial '@categories' %}
-</ul>
+{% if showCategories is not null and categories %}
+    <h5>Sub categories</h5>
+    <ul class="category-list">
+	{% partial '@categories' %}
+    </ul>
+{% endif %}

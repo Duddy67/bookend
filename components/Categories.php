@@ -1,7 +1,6 @@
 <?php namespace Codalia\Bookend\Components;
 
 use Cms\Classes\ComponentBase;
-use Cms\Classes\Page;
 use Codalia\Bookend\Models\Category as BookCategory;
 
 
@@ -12,11 +11,6 @@ class Categories extends ComponentBase
      * @var Collection A collection of categories to display
      */
     public $categories;
-
-    /**
-     * @var string Reference to the current category slug.
-     */
-    public $currentCategorySlug;
 
 
     public function componentDetails()
@@ -30,12 +24,6 @@ class Categories extends ComponentBase
     public function defineProperties()
     {
       return [
-	    'slug' => [
-                'title'       => 'codalia.bookend::lang.settings.category_slug',
-                'description' => 'codalia.bookend::lang.settings.category_slug_description',
-                'default'     => '{{ :slug }}',
-                'type'        => 'string',
-            ],
             'displayEmpty' => [
                 'title'       => 'codalia.bookend::lang.settings.category_display_empty',
                 'description' => 'codalia.bookend::lang.settings.category_display_empty_description',
@@ -53,16 +41,8 @@ class Categories extends ComponentBase
       ];
     }
 
-
-    public function getCategoryPageOptions()
-    {
-        return Page::sortBy('baseFileName')->lists('baseFileName', 'baseFileName');
-    }
-
-
     public function onRun()
     {
-	$this->currentCategorySlug = $this->page['currentCategorySlug'] = $this->property('slug');
 	$this->categories = $this->page['categories'] = $this->loadCategories();
 	$this->page['displayAsMenu'] = $this->property('displayAsMenu');
     }

@@ -7,7 +7,7 @@ use Cms\Classes\ComponentBase;
 use Codalia\Bookend\Models\Book;
 use Codalia\Bookend\Models\Category as BookCategory;
 use Codalia\Bookend\Models\Settings;
-use Cms\Classes\Theme;
+use Cms\Classes\Page;
 use Auth;
 use Event;
 
@@ -113,6 +113,13 @@ class Books extends ComponentCategories
                 'default'     => 0,
                 'showExternalParam' => false
             ],
+	    'bookPage' => [
+                'title'       => 'codalia.bookend::lang.settings.books_book',
+                'description' => 'codalia.bookend::lang.settings.books_book_description',
+                'type'        => 'dropdown',
+                'group'       => 'codalia.bookend::lang.settings.group_links',
+                'showExternalParam' => false
+            ],
             'exceptBook' => [
                 'title'             => 'codalia.bookend::lang.settings.books_except_book',
                 'description'       => 'codalia.bookend::lang.settings.books_except_book_description',
@@ -132,6 +139,11 @@ class Books extends ComponentCategories
                 'showExternalParam' => false
             ]
         ];
+    }
+
+    public function getBookPageOptions()
+    {
+        return Page::sortBy('baseFileName')->lists('baseFileName', 'baseFileName');
     }
 
     public function getSortOrderOptions()
@@ -218,6 +230,7 @@ class Books extends ComponentCategories
     protected function prepareVars()
     {
         $this->noBooksMessage = $this->page['noBooksMessage'] = $this->property('noBooksMessage');
+        $this->page['showCategories'] = $this->property('showCategories');
 
         /*
          * Page link

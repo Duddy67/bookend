@@ -145,6 +145,8 @@ return [
       'books_no_books_default' => 'No books found',
       'books_order' => 'Book order',
       'books_order_description' => 'Attribute on which the books should be ordered',
+      'books_book' => 'Book page',
+      'books_book_description' => 'Name of the book page file for the book links. This property is used by the default component partial.',
       'books_category' => 'Category page',
       'books_category_description' => 'Name of the category page file for the "Posted into" category links. This property is used by the default component partial.',
       'books_show_categories' => 'Show sub-categories',
