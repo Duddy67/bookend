@@ -8,7 +8,7 @@
 
         {% if category.children|length > 0 %}
             <ul>
-                {% partial __SELF__ ~ "::items"
+                {% partial __SELF__ ~ "::categories"
                     categories=category.children
                     currentCategorySlug=currentCategorySlug
                 %}

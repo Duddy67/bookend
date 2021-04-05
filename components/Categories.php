@@ -41,12 +41,14 @@ class Categories extends ComponentBase
                 'description' => 'codalia.bookend::lang.settings.category_display_empty_description',
                 'type'        => 'checkbox',
                 'default'     => 0,
+                'showExternalParam' => false
             ],
             'displayAsMenu' => [
                 'title'       => 'codalia.bookend::lang.settings.category_display_as_menu',
                 'description' => 'codalia.bookend::lang.settings.category_display_as_menu_description',
                 'type'        => 'checkbox',
                 'default'     => 0,
+                'showExternalParam' => false
             ],
       ];
     }
@@ -69,9 +71,9 @@ class Categories extends ComponentBase
      * Load all published categories or, depending on the <displayEmpty> option, only those that have books
      * @return mixed
      */
-    protected function loadCategories()
+    protected function loadCategories($category = null)
     {
-        $categories = BookCategory::where('status', 'published')->with('books_count')->getNested();
+        $categories = ($category) ? $category->getChildren()->where('status', 'published') : BookCategory::where('status', 'published')->getNested();
 
         if (!$this->property('displayEmpty')) {
             $iterator = function ($categories) use (&$iterator) {
@@ -79,9 +81,11 @@ class Categories extends ComponentBase
                     if ($category->getNestedBookCount() == 0) {
                         return true;
                     }
+
                     if ($category->children) {
                         $category->children = $iterator($category->children);
                     }
+
                     return false;
                 });
             };

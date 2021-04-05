@@ -570,6 +570,7 @@ class Book extends Model
             if (count($exceptBookIds)) {
                 $query->whereNotIn('codalia_bookend_books.id', $exceptBookIds);
             }
+
             if (count($exceptBookSlugs)) {
                 $query->whereNotIn('slug', $exceptBookSlugs);
             }

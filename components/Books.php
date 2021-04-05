@@ -2,7 +2,7 @@
 
 use Lang;
 use BackendAuth;
-use Cms\Classes\Page;
+use Codalia\Bookend\Components\Categories as ComponentCategories;
 use Cms\Classes\ComponentBase;
 use Codalia\Bookend\Models\Book;
 use Codalia\Bookend\Models\Category as BookCategory;
@@ -12,7 +12,10 @@ use Auth;
 use Event;
 
 
-class Books extends ComponentBase
+/*
+ * Inherits from the Categories component in order to share the loadCategories method.
+ */
+class Books extends ComponentCategories
 {
     /**
      * A collection of books to display
@@ -22,11 +25,18 @@ class Books extends ComponentBase
     public $books;
 
     /**
-     * If the book list should be filtered by a category, the model to use
+     * The category the books are filtered by.
      *
      * @var Model
      */
     public $category;
+
+    /**
+     * The children of the category the books are filtered by. (Optional)
+     *
+     * @var Collection
+     */
+    public $categories;
 
     /**
      * Message to display when there are no messages
@@ -86,13 +96,22 @@ class Books extends ComponentBase
                 'title'       => 'codalia.bookend::lang.settings.books_order',
                 'description' => 'codalia.bookend::lang.settings.books_order_description',
                 'type'        => 'dropdown',
-                'default'     => 'created_at desc'
+                'default'     => 'created_at desc',
+                'showExternalParam' => false
             ],
-            'bookPage' => [
-                'title'       => 'codalia.bookend::lang.settings.books_book',
-                'description' => 'codalia.bookend::lang.settings.books_book_description',
-                'type'        => 'dropdown',
-                'group'       => 'codalia.bookend::lang.settings.group_links'
+            'showCategories' => [
+                'title'       => 'codalia.bookend::lang.settings.books_show_categories',
+                'description' => 'codalia.bookend::lang.settings.books_show_categories_description',
+                'type'        => 'checkbox',
+                'default'     => 0,
+                'showExternalParam' => false
+            ],
+            'displayEmpty' => [
+                'title'       => 'codalia.bookend::lang.settings.category_display_empty',
+                'description' => 'codalia.bookend::lang.settings.category_display_empty_description',
+                'type'        => 'checkbox',
+                'default'     => 0,
+                'showExternalParam' => false
             ],
             'exceptBook' => [
                 'title'             => 'codalia.bookend::lang.settings.books_except_book',
@@ -100,7 +119,8 @@ class Books extends ComponentBase
                 'type'              => 'string',
                 'validationPattern' => '^[a-z0-9\-_,\s]+$',
                 'validationMessage' => 'codalia.bookend::lang.settings.books_except_book_validation',
-                'group'             => 'codalia.bookend::lang.settings.group_exceptions'
+                'group'             => 'codalia.bookend::lang.settings.group_exceptions',
+                'showExternalParam' => false
             ],
             'exceptCategories' => [
                 'title'             => 'codalia.bookend::lang.settings.books_except_categories',
@@ -108,19 +128,10 @@ class Books extends ComponentBase
                 'type'              => 'string',
                 'validationPattern' => '^[a-z0-9\-_,\s]+$',
                 'validationMessage' => 'codalia.bookend::lang.settings.books_except_categories_validation',
-                'group'             => 'codalia.bookend::lang.settings.group_exceptions'
+                'group'             => 'codalia.bookend::lang.settings.group_exceptions',
+                'showExternalParam' => false
             ]
         ];
-    }
-
-    public function getCategoryPageOptions()
-    {
-        return Page::sortBy('baseFileName')->lists('baseFileName', 'baseFileName');
-    }
-
-    public function getBookPageOptions()
-    {
-        return Page::sortBy('baseFileName')->lists('baseFileName', 'baseFileName');
     }
 
     public function getSortOrderOptions()
@@ -187,6 +198,11 @@ class Books extends ComponentBase
         }
 
         $this->books = $this->page['books'] = $this->listBooks();
+
+        if ($this->property('showCategories')) {
+	    $this->categories = $this->page['categories'] = $this->loadCategories($this->category);
+	}
+
 	$this->addCss(url('plugins/codalia/bookend/assets/css/breadcrumb.css'));
 
         /*
@@ -211,12 +227,9 @@ class Books extends ComponentBase
 
     protected function listBooks()
     {
-        $category = $this->category ? $this->category->id : null;
-
         /*
          * List all the books, eager load their categories
          */
-
 	$books = Book::whereHas('category', function ($query) {
 	        // Books must have their main category published.
 		$query->where('status', 'published');
@@ -231,7 +244,7 @@ class Books extends ComponentBase
             'sort'             => $this->property('sortOrder'),
             'perPage'          => $this->property('booksPerPage'),
             'search'           => trim(input('search')),
-            'category'         => $category,
+            'category'         => $this->category->id,
             'exceptBook'       => is_array($this->property('exceptBook'))
                 ? $this->property('exceptBook')
                 : preg_split('/,\s*/', $this->property('exceptBook'), -1, PREG_SPLIT_NO_EMPTY),
