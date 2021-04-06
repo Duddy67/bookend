@@ -46,6 +46,13 @@ class Books extends ComponentCategories
     public $noBooksMessage;
 
     /**
+     * Reference to the page name for linking to categories
+     *
+     * @var string
+     */
+    public $categoryPage;
+
+    /**
      * Reference to the page name for linking to books
      *
      * @var string
@@ -113,6 +120,13 @@ class Books extends ComponentCategories
                 'default'     => 0,
                 'showExternalParam' => false
             ],
+	    'categoryPage' => [
+                'title'       => 'codalia.bookend::lang.settings.books_category',
+                'description' => 'codalia.bookend::lang.settings.books_category_description',
+                'type'        => 'dropdown',
+                'group'       => 'codalia.bookend::lang.settings.group_links',
+                'showExternalParam' => false
+            ],
 	    'bookPage' => [
                 'title'       => 'codalia.bookend::lang.settings.books_book',
                 'description' => 'codalia.bookend::lang.settings.books_book_description',
@@ -139,6 +153,11 @@ class Books extends ComponentCategories
                 'showExternalParam' => false
             ]
         ];
+    }
+
+    public function getCategoryPageOptions()
+    {
+        return Page::sortBy('baseFileName')->lists('baseFileName', 'baseFileName');
     }
 
     public function getBookPageOptions()
@@ -236,6 +255,7 @@ class Books extends ComponentCategories
          * Page link
          */
         $this->bookPage = $this->page['bookPage'] = $this->property('bookPage');
+        $this->categoryPage = $this->page['categoryPage'] = $this->property('categoryPage');
     }
 
     protected function listBooks()
@@ -273,7 +293,7 @@ class Books extends ComponentCategories
 	    $book->setUrl($this->bookPage, $this->controller, $this->category);
 
 	    $book->categories->each(function($category, $key) {
-		$category->setUrl($this->controller);
+		$category->setUrl($this->categoryPage, $this->controller);
 	    });
         });
 

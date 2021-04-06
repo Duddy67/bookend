@@ -162,7 +162,10 @@ return [
       'featured_description' => 'Displays books of a specific category in the home page.',
       'featured_id' => 'Category ID',
       'featured_id_description' => 'Enter the slug or the numeric id of a category to get the books from. Add a "id:" prefix for numeric ids (eg: id:25).',
-      'invalid_file_name' => 'Invalid file name. File name must start with: "category-level-" followed by a numeric value, (eg: category-level-1.htm). The numeric value refers to the depht of the category path.',
+      'invalid_file_name' => 'Invalid file name.
+			      File name must start with: "category-level-" followed by a numeric value, (eg: category-level-1.htm).
+			      The numeric value refers to the depht of the category path.
+                              To cancel this warning, please disable the "Hierarchical URL" option in the Bookend global settings.',
     ],
     'global_settings' => [
       'tab_general' => 'General',
@@ -170,6 +173,8 @@ return [
       'max_characters_comment' => 'The maximum number of characters to display in category view',
       'show_breadcrumb_label' => 'Show breadcrumb',
       'show_breadcrumb_comment' => 'Show a breadcrumb in book and category views.',
+      'hierarchical_url_label' => 'Hierarchical URL',
+      'hierarchical_url_comment' => 'Hierarchical URL',
     ],
     'messages' => [
       'required_field' => 'This field is required'

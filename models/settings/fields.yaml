@@ -15,3 +15,11 @@ tabs:
             type: switch
             default: 1
             tab: codalia.bookend::lang.global_settings.tab_general
+
+        hierarchical_url:
+            span: left
+            label: codalia.bookend::lang.global_settings.hierarchical_url_label
+            comment: codalia.bookend::lang.global_settings.hierarchical_url_comment
+            type: switch
+            default: 1
+            tab: codalia.bookend::lang.global_settings.tab_general

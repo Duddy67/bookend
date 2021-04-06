@@ -2,6 +2,7 @@
 
 use Cms\Classes\ComponentBase;
 use Codalia\Bookend\Models\Category as BookCategory;
+use Cms\Classes\Page;
 
 
 class Categories extends ComponentBase
@@ -11,6 +12,13 @@ class Categories extends ComponentBase
      * @var Collection A collection of categories to display
      */
     public $categories;
+
+    /**
+     * Reference to the page name for linking to categories
+     *
+     * @var string
+     */
+    public $categoryPage;
 
 
     public function componentDetails()
@@ -38,11 +46,25 @@ class Categories extends ComponentBase
                 'default'     => 0,
                 'showExternalParam' => false
             ],
+	    'categoryPage' => [
+                'title'       => 'codalia.bookend::lang.settings.books_category',
+                'description' => 'codalia.bookend::lang.settings.books_category_description',
+                'type'        => 'dropdown',
+                'group'       => 'codalia.bookend::lang.settings.group_links',
+                'showExternalParam' => false
+            ],
       ];
+    }
+
+
+    public function getCategoryPageOptions()
+    {
+        return Page::sortBy('baseFileName')->lists('baseFileName', 'baseFileName');
     }
 
     public function onRun()
     {
+	$this->categoryPage = $this->page['categoryPage'] = $this->property('categoryPage');
 	$this->categories = $this->page['categories'] = $this->loadCategories();
 	$this->page['displayAsMenu'] = $this->property('displayAsMenu');
     }
@@ -86,7 +108,7 @@ class Categories extends ComponentBase
     protected function linkCategories($categories)
     {
         return $categories->each(function ($category) {
-            $category->setUrl($this->controller);
+            $category->setUrl($this->categoryPage, $this->controller);
 
             if ($category->children) {
                 $this->linkCategories($category->children);

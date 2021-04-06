@@ -2,6 +2,7 @@
 
 use Model;
 use Lang;
+use Codalia\Bookend\Models\Settings;
 
 /**
  * Category Model
@@ -41,6 +42,8 @@ class Category extends Model
         'description',
         ['slug', 'index' => true]
     ];
+
+    public $pages;
 
     /**
      * @var array Attributes to be cast to native types
@@ -206,31 +209,33 @@ class Category extends Model
      *
      * @return string
      */
-    public function setUrl($controller)
+    public function setUrl($pageName, $controller)
     {
         $params = [
             'id'   => $this->id,
 	    'slug' => $this->slug,
         ];
 
-	$this->path = self::getCategoryPath($this);
-	$level = count($this->path);
-	// Sets the category page with the appropriate url pattern.
-	$pageName = 'category-level-'.$level;
+	if (Settings::get('hierarchical_url', 0)) {
+	    $this->path = self::getCategoryPath($this);
+	    $level = count($this->path);
+	    // Sets the category page with the appropriate url pattern.
+	    $pageName = 'category-level-'.$level;
 
-	// The given category has parents.
-	if ($level > 1) {
-	    // Loops through the category path.
-	    foreach ($this->path as $key => $slug) {
-	        $i = $key + 1;
+	    // The given category has parents.
+	    if ($level > 1) {
+		// Loops through the category path.
+		foreach ($this->path as $key => $slug) {
+		    $i = $key + 1;
 
-		// Don't treat the last element as it's the given category itself.
-		if ($i == $level) {
-		    break;
+		    // Don't treat the last element as it's the given category itself.
+		    if ($i == $level) {
+			break;
+		    }
+
+		    // Sets the parents of the given category.
+		    $params['level-'.$i] = $slug; 
 		}
-
-		// Sets the parents of the given category.
-	        $params['parent-'.$i] = $slug; 
 	    }
 	}
 

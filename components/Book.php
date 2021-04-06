@@ -16,6 +16,13 @@ class Book extends ComponentBase
      */
     public $book;
 
+    /**
+     * Reference to the page name for linking to categories
+     *
+     * @var string
+     */
+    public $categoryPage;
+
 
     public function componentDetails()
     {
@@ -33,6 +40,13 @@ class Book extends ComponentBase
                 'description' => 'codalia.bookend::lang.settings.book_slug_description',
                 'default'     => '{{ :slug }}',
                 'type'        => 'string',
+            ],
+	    'categoryPage' => [
+                'title'       => 'codalia.bookend::lang.settings.books_category',
+                'description' => 'codalia.bookend::lang.settings.books_category_description',
+                'type'        => 'dropdown',
+                'group'       => 'codalia.bookend::lang.settings.group_links',
+                'showExternalParam' => false
             ],
         ];
     }
@@ -83,6 +97,7 @@ class Book extends ComponentBase
     public function onRun()
     {
         $this->book = $this->page['book'] = $this->loadBook();
+	$this->categoryPage = $this->page['categoryPage'] = $this->property('categoryPage');
 
         if ($this->book === null || $this->book->category->status != 'published') {
             return \Redirect::to(404);
@@ -122,7 +137,7 @@ class Book extends ComponentBase
         }
 
         // Add a "url" helper attribute for linking to the main category.
-	$book->category->setUrl($this->controller);
+	$book->category->setUrl($this->categoryPage, $this->controller);
 	$urls = [];
 
         /*
@@ -130,7 +145,7 @@ class Book extends ComponentBase
          */
         if ($book && $book->categories->count()) {
             $book->categories->each(function($category, $key) use(&$urls) {
-		$url = $category->setUrl($this->controller);
+		$url = $category->setUrl($this->categoryPage, $this->controller);
 		$segments = explode('/', $url);
 		// Computes the index of the first category segment.
 		$index = count($segments) - ($category->nest_depth + 1);
@@ -220,7 +235,7 @@ class Book extends ComponentBase
         $book->setUrl($bookPage, $this->controller);
 
         $book->categories->each(function($category) {
-            $category->setUrl($this->controller);
+            $category->setUrl($this->categoryPage, $this->controller);
         });
 
         return $book;
