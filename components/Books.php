@@ -292,12 +292,17 @@ class Books extends ComponentCategories
         $books->each(function($book, $key) {
 	    $book->setUrl($this->bookPage, $this->controller, $this->category);
 
+	    if (Settings::get('show_breadcrumb')) {
+		$book->url = $book->url.'?cat='.$this->category->id;
+	    }
+
 	    $book->categories->each(function($category, $key) {
 		$category->setUrl($this->categoryPage, $this->controller);
 	    });
         });
 
-	if (isset($this->category) && Settings::get('show_breadcrumb')) {
+	if (Settings::get('show_breadcrumb')) {
+	    $this->category->categoryPage = $this->categoryPage;
 	    $this->category->breadcrumb = \Codalia\Bookend\Helpers\BookendHelper::instance()->getBreadcrumb($this->category);
 	}
 

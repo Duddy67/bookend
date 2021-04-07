@@ -7,6 +7,7 @@ use Flash;
 use Db;
 use App;
 use Codalia\Bookend\Models\Category;
+use Codalia\Bookend\Models\Settings;
 
 
 class BookendHelper
@@ -90,7 +91,7 @@ class BookendHelper
 
 	foreach ($path as $key => $attributes) {
 	    $level = $key + 1;
-	    $pageName = 'category-level-'.$level.'.htm';
+	    $pageName = (Settings::get('hierarchical_url', 0)) ? 'category-level-'.$level.'.htm' : $category->categoryPage.'.htm';
 	    $params = ['slug' => $attributes['slug']];
 
 	    if ($level > 1) {
@@ -103,9 +104,9 @@ class BookendHelper
 			break;
 		    }
 
-		    // Sets the parents of the given category.
+		    // Sets the level of the given category.
 		    //$params['parent-'.$i] = $category['slug']; 
-		    $params['parent-'.$i] = $attr['slug']; 
+		    $params['level-'.$i] = $attr['slug']; 
 		}
 	    }
 

@@ -13,7 +13,7 @@
     {% partial '@pagination' %}
 </div>
 
-{% if showCategories is not null and categories %}
+{% if showCategories is not null and categories.count %}
     <h5>Sub categories</h5>
     <ul class="category-list">
 	{% partial '@categories' %}

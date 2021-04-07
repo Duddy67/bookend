@@ -33,6 +33,13 @@ class Featured extends ComponentBase
     public $noBooksMessage;
 
     /**
+     * Reference to the page name for linking to categories
+     *
+     * @var string
+     */
+    public $categoryPage;
+
+    /**
      * Reference to the page name for linking to books
      *
      * @var string
@@ -83,13 +90,22 @@ class Featured extends ComponentBase
                 'title'       => 'codalia.bookend::lang.settings.books_order',
                 'description' => 'codalia.bookend::lang.settings.books_order_description',
                 'type'        => 'dropdown',
-                'default'     => 'created_at desc'
+                'default'     => 'created_at desc',
+                'showExternalParam' => false
+            ],
+	    'categoryPage' => [
+                'title'       => 'codalia.bookend::lang.settings.books_category',
+                'description' => 'codalia.bookend::lang.settings.books_category_description',
+                'type'        => 'dropdown',
+                'group'       => 'codalia.bookend::lang.settings.group_links',
+                'showExternalParam' => false
             ],
             'bookPage' => [
                 'title'       => 'codalia.bookend::lang.settings.books_book',
                 'description' => 'codalia.bookend::lang.settings.books_book_description',
                 'type'        => 'dropdown',
-                'group'       => 'codalia.bookend::lang.settings.group_links'
+                'group'       => 'codalia.bookend::lang.settings.group_links',
+                'showExternalParam' => false
             ],
             'exceptBook' => [
                 'title'             => 'codalia.bookend::lang.settings.books_except_book',
@@ -97,7 +113,8 @@ class Featured extends ComponentBase
                 'type'              => 'string',
                 'validationPattern' => '^[a-z0-9\-_,\s]+$',
                 'validationMessage' => 'codalia.bookend::lang.settings.books_except_book_validation',
-                'group'             => 'codalia.bookend::lang.settings.group_exceptions'
+                'group'             => 'codalia.bookend::lang.settings.group_exceptions',
+                'showExternalParam' => false
             ]
         ];
     }
@@ -162,6 +179,7 @@ class Featured extends ComponentBase
          * Page link
          */
         $this->bookPage = $this->page['bookPage'] = $this->property('bookPage');
+        $this->categoryPage = $this->page['categoryPage'] = $this->property('categoryPage');
     }
 
     protected function listBooks()
@@ -202,7 +220,7 @@ class Featured extends ComponentBase
 	    $book->setUrl($this->bookPage, $this->controller);
 
 	    $book->categories->each(function($category, $key) {
-		$category->setUrl($this->controller);
+		$category->setUrl($this->categoryPage, $this->controller);
 	    });
         });
 

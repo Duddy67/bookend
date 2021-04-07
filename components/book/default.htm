@@ -1,9 +1,10 @@
 {% set book = __SELF__.book %}
 
-
-{% put head %}
-  <link href="{{ url('/') }}/{{ book.canonical }}" rel="canonical">
-{% endput %}
+{% if book.canonical is not null %}
+    {% put head %}
+	<link href="{{ url('/') }}/{{ book.canonical }}" rel="canonical">
+    {% endput %}
+{% endif %}
 
 {% if book.breadcrumb is not null %}
   {% partial "@breadcrumb" path = book.breadcrumb prefix = book.prefix %}

@@ -174,7 +174,7 @@ return [
       'show_breadcrumb_label' => 'Show breadcrumb',
       'show_breadcrumb_comment' => 'Show a breadcrumb in book and category views.',
       'hierarchical_url_label' => 'Hierarchical URL',
-      'hierarchical_url_comment' => 'Hierarchical URL',
+      'hierarchical_url_comment' => 'Displays the category path to a book as a hierarchical URL. A specific setting is required on pages.',
     ],
     'messages' => [
       'required_field' => 'This field is required'

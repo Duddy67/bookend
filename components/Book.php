@@ -96,8 +96,8 @@ class Book extends ComponentBase
 
     public function onRun()
     {
-        $this->book = $this->page['book'] = $this->loadBook();
 	$this->categoryPage = $this->page['categoryPage'] = $this->property('categoryPage');
+        $this->book = $this->page['book'] = $this->loadBook();
 
         if ($this->book === null || $this->book->category->status != 'published') {
             return \Redirect::to(404);
@@ -120,7 +120,6 @@ class Book extends ComponentBase
     protected function loadBook()
     {
         $slug = $this->property('slug');
-
         $book = new BookItem;
 
         $book = $book->isClassExtendedWith('RainLab.Translate.Behaviors.TranslatableModel')
@@ -138,6 +137,7 @@ class Book extends ComponentBase
 
         // Add a "url" helper attribute for linking to the main category.
 	$book->category->setUrl($this->categoryPage, $this->controller);
+	$book->canonical = null;
 	$urls = [];
 
         /*
@@ -146,35 +146,39 @@ class Book extends ComponentBase
         if ($book && $book->categories->count()) {
             $book->categories->each(function($category, $key) use(&$urls) {
 		$url = $category->setUrl($this->categoryPage, $this->controller);
-		$segments = explode('/', $url);
-		// Computes the index of the first category segment.
-		$index = count($segments) - ($category->nest_depth + 1);
-		$path = '';
 
-		// Builds the path for this category.
-		for ($i = $index; $i < count($segments); $i++) {
-		    $path .= $segments[$i].'/';
+		if (Settings::get('hierarchical_url', 0)) {
+		    $segments = explode('/', $url);
+		    // Computes the index of the first category segment.
+		    $index = count($segments) - ($category->nest_depth + 1);
+		    $path = '';
+
+		    // Builds the path for this category.
+		    for ($i = $index; $i < count($segments); $i++) {
+			$path .= $segments[$i].'/';
+		    }
+
+		    // Removes slash from the end of the string.
+		    $path = substr($path, 0, -1);
+		    $urls[] = $path;
 		}
-
-                // Removes slash from the end of the string.
-		$path = substr($path, 0, -1);
-		$urls[] = $path;
             });
 	}
 
-	// Checks the given category path.
-        if ($this->param('category-path') && !in_array($this->param('category-path'), $urls)) {
-	    return null;
+	if (Settings::get('hierarchical_url', 0)) {
+	    // Checks the given category path.
+	    if ($this->param('category-path') && !in_array($this->param('category-path'), $urls)) {
+		return null;
+	    }
+
+	    // Builds the canonical link to the book based on the main category of the book.
+	    $path = implode('/', Category::getCategoryPath($book->category));
+	    $bookPage = $this->getPage()->getBaseFileName();
+	    $params = ['id' => $book->id, 'slug' => $book->slug, 'category' => $path];
+	    $book->canonical = $this->controller->pageUrl($bookPage, $params);
 	}
 
-	// Builds the canonical link to the book based on the main category of the book.
-	$path = implode('/', Category::getCategoryPath($book->category));
-	$bookPage = $this->getPage()->getBaseFileName();
-	$params = ['id' => $book->id, 'slug' => $book->slug, 'category' => $path];
-	$book->canonical = $this->controller->pageUrl($bookPage, $params);
-
-	// Doesn't display the breadcrumb if the category path is not used.
-	if ($this->param('category-path') && Settings::get('show_breadcrumb')) {
+	if (Settings::get('show_breadcrumb') && request()->has('cat') && request()->cat) {
 	    $book->breadcrumb = $this->getBreadcrumb($book);
 	}
 
@@ -190,20 +194,16 @@ class Book extends ComponentBase
      */
     public function getBreadcrumb($book)
     {
-        preg_match('#/([a-z0-9-]+)/'.$book->slug.'$#', $this->currentPageUrl(), $matches);
-        $slug = $matches[1];
         $category = new Category;
 
-        $category = $category->isClassExtendedWith('RainLab.Translate.Behaviors.TranslatableModel')
-		      ? $category->transWhere('slug', $slug)
-		      : $category->where('slug', $slug);
-
         try {
-            $category = $category->firstOrFail();
+            $category = $category->find(request()->cat);
         } catch (ModelNotFoundException $ex) {
             $this->setStatusCode(404);
             return $this->controller->run('404');
         }
+
+	$category->categoryPage = $this->categoryPage;
 
 	return \Codalia\Bookend\Helpers\BookendHelper::instance()->getBreadcrumb($category, $book);
     }
@@ -233,6 +233,11 @@ class Book extends ComponentBase
         $bookPage = $this->getPage()->getBaseFileName();
 
         $book->setUrl($bookPage, $this->controller);
+
+	if (Settings::get('show_breadcrumb', 0)) {
+	    // Uses the main category.
+	    $book->url = $book->url.'?cat='.$book->category->id;
+	}
 
         $book->categories->each(function($category) {
             $category->setUrl($this->categoryPage, $this->controller);
