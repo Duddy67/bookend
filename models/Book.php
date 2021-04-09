@@ -540,12 +540,14 @@ class Book extends Model
             'sort'             => 'created_at',
             'categories'       => null,
             'exceptCategories' => null,
-            'category'         => null,
+            'categoryIds'      => null,
             'search'           => '',
             'exceptBook'       => null
         ], $options));
 
         $searchableFields = ['title', 'slug', 'description'];
+	// If books are filtred by a single category, gets its id.
+	$categoryId = ($categoryIds !== null && count($categoryIds) == 1) ? $categoryIds[0] : null;
 
 	// Shows only published books.
 	$query->isPublished();
@@ -581,7 +583,7 @@ class Book extends Model
          * Sorting
          */
         if (in_array($sort, array_keys(static::$allowedSortingOptions))) {
-            if ($sort == 'random' || (substr($sort, 0, 10) === 'sort_order' && $category === null)) {
+            if ($sort == 'random' || (substr($sort, 0, 10) === 'sort_order' && $categoryId === null)) {
                 $query->inRandomOrder();
             } else {
                 @list($sortField, $sortDirection) = explode(' ', $sort);
@@ -595,9 +597,9 @@ class Book extends Model
 		  //            categories won't match.
 		  $query->select('codalia_bookend_books.*')
 			// Joins over the ordering model.
-		        ->join('codalia_bookend_orderings AS o', function($join) use($category) {
+		        ->join('codalia_bookend_orderings AS o', function($join) use($categoryId) {
 			    $join->on('o.book_id', '=', 'codalia_bookend_books.id')
-				 ->where('o.category_id', '=', $category);
+				 ->where('o.category_id', '=', $categoryId);
 			});
 		}
 
@@ -636,11 +638,11 @@ class Book extends Model
         }
 
         /*
-         * Gets books which are in the current category.
+         * Gets books which are filtered by one or more categories.
          */
-        if ($category !== null) {
-            $query->whereHas('categories', function($q) use ($category) {
-                $q->where('id', $category);
+        if ($categoryIds !== null) {
+            $query->whereHas('categories', function($q) use ($categoryIds) {
+                $q->whereIn('id', $categoryIds);
             });
         }
 

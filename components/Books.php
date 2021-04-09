@@ -25,7 +25,7 @@ class Books extends ComponentCategories
     public $books;
 
     /**
-     * The category the books are filtered by.
+     * If the book list should be filtered by a category, the model to use.
      *
      * @var Model
      */
@@ -82,7 +82,8 @@ class Books extends ComponentCategories
                 'title'       => 'codalia.bookend::lang.settings.books_filter',
                 'description' => 'codalia.bookend::lang.settings.books_filter_description',
                 'type'        => 'string',
-                'default'     => '{{ :slug }}',
+                'default'     => '',
+                'validationPattern' => '^[0-9,\s]+$',
             ],
             'booksPerPage' => [
                 'title'             => 'codalia.bookend::lang.settings.books_per_page',
@@ -104,6 +105,14 @@ class Books extends ComponentCategories
                 'description' => 'codalia.bookend::lang.settings.books_order_description',
                 'type'        => 'dropdown',
                 'default'     => 'created_at desc',
+                'showExternalParam' => false
+            ],
+            'hideCategories' => [
+                'title'             => 'codalia.bookend::lang.settings.books_hide_categories',
+                'description'       => 'codalia.bookend::lang.settings.books_hide_categories_description',
+                'type'              => 'string',
+                'validationPattern' => '^[0-9,\s]+$',
+                'validationMessage' => 'codalia.bookend::lang.settings.books_category_ids_validation',
                 'showExternalParam' => false
             ],
             'showCategories' => [
@@ -151,7 +160,7 @@ class Books extends ComponentCategories
                 'validationMessage' => 'codalia.bookend::lang.settings.books_except_categories_validation',
                 'group'             => 'codalia.bookend::lang.settings.group_exceptions',
                 'showExternalParam' => false
-            ]
+            ],
         ];
     }
 
@@ -222,16 +231,18 @@ class Books extends ComponentCategories
     public function onRun()
     {
         $this->prepareVars();
-        $this->category = $this->page['category'] = $this->loadCategory();
-
-        if ($this->category === null) {
-            return \Redirect::to(404);
-        }
-
+	$this->category = $this->page['category'] = $this->loadCategory();
         $this->books = $this->page['books'] = $this->listBooks();
 
-        if ($this->property('showCategories')) {
-	    $this->categories = $this->page['categories'] = $this->loadCategories($this->category);
+	// N.B: Do not use the category class attribut here as it's going to be used with filtering.
+	$category = $this->category;
+	// Books are filtered by a single category id.
+	if ($category === null && preg_match('#^[0-9]+$#', $this->property('categoryFilter'))) {
+	    $category = BookCategory::find($this->property('categoryFilter'));
+	}
+
+        if ($category && $this->property('showCategories')) {
+	    $this->categories = $this->page['categories'] = $this->loadCategories($category);
 	}
 
 	$this->addCss(url('plugins/codalia/bookend/assets/css/breadcrumb.css'));
@@ -260,6 +271,15 @@ class Books extends ComponentCategories
 
     protected function listBooks()
     {
+        // Sets the ids the books are filtered by.
+
+        // Books are filtered by a category slug.
+        $categoryIds = ($this->category) ? [$this->category->id] : null;
+        // Books are filtered by one or more category ids.
+	if ($categoryIds === null && preg_match('#^[0-9,\s]+$#', $this->property('categoryFilter'))) {
+	    $categoryIds = explode(',', $this->property('categoryFilter'));
+	}
+
         /*
          * List all the books, eager load their categories
          */
@@ -273,11 +293,15 @@ class Books extends ComponentCategories
         })->with(['categories' => function ($query) {
 	        // Gets published categories only.
 		$query->where('status', 'published');
+
+		if ($this->property('hideCategories')) {
+		    $query->whereNotIn('id', explode(',', $this->property('hideCategories')));
+		}
 	}])->listFrontEnd([
             'sort'             => $this->property('sortOrder'),
             'perPage'          => $this->property('booksPerPage'),
             'search'           => trim(input('search')),
-            'category'         => $this->category->id,
+            'categoryIds'      => $categoryIds,
             'exceptBook'       => is_array($this->property('exceptBook'))
                 ? $this->property('exceptBook')
                 : preg_split('/,\s*/', $this->property('exceptBook'), -1, PREG_SPLIT_NO_EMPTY),
@@ -292,7 +316,7 @@ class Books extends ComponentCategories
         $books->each(function($book, $key) {
 	    $book->setUrl($this->bookPage, $this->controller, $this->category);
 
-	    if (Settings::get('show_breadcrumb')) {
+	    if ($this->category && Settings::get('show_breadcrumb')) {
 		$book->url = $book->url.'?cat='.$this->category->id;
 	    }
 
@@ -301,7 +325,12 @@ class Books extends ComponentCategories
 	    });
         });
 
-	if (Settings::get('show_breadcrumb')) {
+	// Books are filtered by a single category id.
+	if ($this->category === null && preg_match('#^[0-9]+$#', $this->property('categoryFilter'))) {
+	    $this->category = BookCategory::find($this->property('categoryFilter'));
+	}
+
+	if ($this->category && Settings::get('show_breadcrumb')) {
 	    $this->category->categoryPage = $this->categoryPage;
 	    $this->category->breadcrumb = \Codalia\Bookend\Helpers\BookendHelper::instance()->getBreadcrumb($this->category);
 	}
@@ -309,11 +338,15 @@ class Books extends ComponentCategories
         return $books;
     }
 
+    /*
+     * Gets a category filtered by slug.
+     */
     protected function loadCategory()
     {
-        if (!$slug = $this->property('categoryFilter')) {
+        // Ensures the category is filtered by slug.
+        if (!($slug = $this->property('categoryFilter')) || !preg_match('#^[a-z-]+?#', $this->property('categoryFilter'))) {
             return null;
-        }
+	}
 
         $category = new BookCategory;
 
@@ -329,8 +362,8 @@ class Books extends ComponentCategories
 	$i = 1;
 
 	// Builds the category path (if any).
-	while ($this->param('parent-'.$i)) {
-	    $path[] = $this->param('parent-'.$i);
+	while ($this->param('level-'.$i)) {
+	    $path[] = $this->param('level-'.$i);
 	    $i++;
 	}
 

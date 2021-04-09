@@ -50,9 +50,16 @@ class Categories extends ComponentBase
                 'title'       => 'codalia.bookend::lang.settings.books_category',
                 'description' => 'codalia.bookend::lang.settings.books_category_description',
                 'type'        => 'dropdown',
-                'group'       => 'codalia.bookend::lang.settings.group_links',
                 'showExternalParam' => false
             ],
+            'exceptCategories' => [
+                'title'             => 'codalia.bookend::lang.settings.books_except_categories',
+                'description'       => 'codalia.bookend::lang.settings.books_except_categories_description',
+                'type'              => 'string',
+                'validationPattern' => '^[0-9,\s]+$',
+                'validationMessage' => 'codalia.bookend::lang.settings.books_except_categories_validation',
+                'showExternalParam' => false
+            ]
       ];
     }
 
@@ -77,10 +84,13 @@ class Categories extends ComponentBase
     {
         $categories = ($category) ? $category->getChildren()->where('status', 'published') : BookCategory::where('status', 'published')->getNested();
 
-        if (!$this->property('displayEmpty')) {
-            $iterator = function ($categories) use (&$iterator) {
-                return $categories->reject(function ($category) use (&$iterator) {
-                    if ($category->getNestedBookCount() == 0) {
+        if (!$this->property('displayEmpty') || !$this->property('exceptCategories')) {
+	    // Gets the ids of the categories to exclude.
+	    $ids = explode(',', $this->property('exceptCategories'));
+
+            $iterator = function ($categories) use (&$iterator, $ids) {
+                return $categories->reject(function ($category) use (&$iterator, $ids) {
+                    if ($category->getNestedBookCount() == 0 || in_array($category->id, $ids)) {
                         return true;
                     }
 

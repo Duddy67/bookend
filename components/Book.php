@@ -41,6 +41,14 @@ class Book extends ComponentBase
                 'default'     => '{{ :slug }}',
                 'type'        => 'string',
             ],
+            'hideCategories' => [
+                'title'             => 'codalia.bookend::lang.settings.books_hide_categories',
+                'description'       => 'codalia.bookend::lang.settings.books_hide_categories_description',
+                'type'              => 'string',
+                'validationPattern' => '^[0-9,\s]+$',
+                'validationMessage' => 'codalia.bookend::lang.settings.books_except_categories_validation',
+                'showExternalParam' => false
+            ],
 	    'categoryPage' => [
                 'title'       => 'codalia.bookend::lang.settings.books_category',
                 'description' => 'codalia.bookend::lang.settings.books_category_description',
@@ -129,6 +137,10 @@ class Book extends ComponentBase
         $book->with(['categories' => function ($query) {
 	    // Gets only published categories.
 	    $query->where('status', 'published');
+
+	    if ($this->property('hideCategories')) {
+		$query->whereNotIn('id', explode(',', $this->property('hideCategories')));
+	    }
         }]);
 
 	if (($book = $book->first()) === null) {
