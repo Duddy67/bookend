@@ -177,6 +177,8 @@ return [
       'show_breadcrumb_comment' => 'Show a breadcrumb in book and book list views. Only available when books are filtered by a single category.',
       'hierarchical_url_label' => 'Hierarchical URL',
       'hierarchical_url_comment' => 'Displays the category path to a book as a hierarchical URL. A specific setting is required on pages.',
+      'restful_api_label' => 'RESTful API',
+      'restful_api_comment' => 'Enables or disables the RESTful API of the plugin.',
     ],
     'messages' => [
       'required_field' => 'This field is required'

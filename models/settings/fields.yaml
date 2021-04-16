@@ -23,3 +23,11 @@ tabs:
             type: switch
             default: 1
             tab: codalia.bookend::lang.global_settings.tab_general
+
+        restful_api:
+            span: left
+            label: codalia.bookend::lang.global_settings.restful_api_label
+            comment: codalia.bookend::lang.global_settings.restful_api_comment
+            type: switch
+            default: 1
+            tab: codalia.bookend::lang.global_settings.tab_general
