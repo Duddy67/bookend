@@ -1,5 +1,4 @@
 <?php 
-use Codalia\Bookend\Models\Settings;
 
 // Redirects all the orderings views except for the reorder one.
 
@@ -21,13 +20,7 @@ Route::get('backend/codalia/bookend/orderings/preview/{id}', function() {
 
 // RESTful API.
 
-App::before(function($request) {
-    Route::group(['prefix' => 'api/v1'], function () {
-	if (Settings::get('restful_api', 0)) {
-	    Route::resource('book', 'Codalia\Bookend\Controllers\Restful');
-	}
-	else {
-	    Route::get('book', 'Codalia\Bookend\Controllers\Restful@unavailable');
-	}
-    });
+Route::group(['prefix' => 'api/v1', 'middleware' => 'Codalia\Bookend\Classes\RestfulApiMiddleware'], function () {
+    Route::resource('book', 'Codalia\Bookend\Controllers\Restful');
 });
+

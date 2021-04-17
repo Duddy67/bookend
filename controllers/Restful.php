@@ -81,9 +81,4 @@ class Restful extends Controller
         // Replace with logic to return the model data
         return 'bar (destroy)';
     }
-
-    public function unavailable()
-    {
-	return response()->json(['error' => 'Service unavailable'], 503);
-    }
 }

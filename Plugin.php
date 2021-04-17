@@ -56,6 +56,10 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
+        // Add a new middleware to end of the stack.
+	$this->app['Illuminate\Contracts\Http\Kernel']
+	     ->pushMiddleware('Codalia\Bookend\Classes\RestfulApiMiddleware');
+
 	Event::listen('backend.page.beforeDisplay', function ($controller, $action, $params) {
             // Only for specific controllers.
             if (!$controller instanceof BooksController && !$controller instanceof CategoriesController) {
