@@ -1,9 +1,12 @@
 <?php namespace Codalia\Bookend\Controllers;
 
-use BackendMenu;
-use Backend\Classes\Controller;
+//use BackendMenu;
+//use Backend\Classes\Controller;
+use Illuminate\Routing\Controller;
+use Illuminate\Http\Request;
 use Codalia\Bookend\Models\Book;
 use Input;
+use DB;
 
 /**
  * Restful Back-end Controller
@@ -13,46 +16,49 @@ class Restful extends Controller
     /**
      * @var array Behaviors that are implemented by this controller.
      */
-    public $implement = [
+    /*public $implement = [
         'Backend.Behaviors.FormController',
         'Backend.Behaviors.ListController'
-    ];
+    ];*/
 
     /**
      * @var string Configuration file for the `FormController` behavior.
      */
-    public $formConfig = 'config_form.yaml';
+    //public $formConfig = 'config_form.yaml';
 
     /**
      * @var string Configuration file for the `ListController` behavior.
      */
-    public $listConfig = 'config_list.yaml';
+    //public $listConfig = 'config_list.yaml';
 
     public function __construct()
     {
-        parent::__construct();
+        //parent::__construct();
 
-        BackendMenu::setContext('Codalia.Bookend', 'bookend', 'restful');
+        //BackendMenu::setContext('Codalia.Bookend', 'bookend', 'restful');
     }
 
     public function index()
     {
-        $category = Input::get('category', null);
-	$query = Book::where('status', 'published');
+	$query = $this->getQuery();
 
-	if ($category) {
-	    $query = Book::whereHas('categories', function($query) use($category) {
+	if ($category = Input::get('category', null)) {
+	    $query->whereHas('categories', function($query) use($category) {
 	        $query->where('id', $category);
 	    });
 	}
 
-	return response()->json($query->get(), 200);
+	// N.B: Removes the $appends attributes from the data set.
+	return response()->json($query->get()->each->setAppends([]), 200);
     }
 
     public function show($id)
     {
-        if ($book = Book::where('id', $id)->first()) {
-	    return response()->json($book, 200);
+	$query = $this->getQuery();
+
+	if ($book = $query->where('id', $id)->first()) {
+	    // N.B: Removes the $appends attributes from the result.
+	    return response()->json($book->setAppends([]), 200);
 	}
 
 	return response()->json(['error' => 'Resource not found'], 404);
@@ -70,8 +76,9 @@ class Restful extends Controller
         return 'bar (store)';
     }
 
-    public function update($id)
+    public function update(Request $request, $id)
     {
+        return $request;
         // Replace with logic to return the model data
         return 'bar (update)';
     }
@@ -80,5 +87,12 @@ class Restful extends Controller
     {
         // Replace with logic to return the model data
         return 'bar (destroy)';
+    }
+
+    private function getQuery()
+    {
+	return Book::select(['id', 'title', DB::raw("ExtractValue(description, '//text()') as description")])
+		     ->with(['categories' => function($query) { $query->select('id', 'name')->where('status', 'published'); }])
+		     ->where('status', 'published');
     }
 }
