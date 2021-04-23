@@ -1,10 +1,9 @@
 <?php namespace Codalia\Bookend\Controllers;
 
-//use BackendMenu;
-//use Backend\Classes\Controller;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Codalia\Bookend\Models\Book;
+use BackendAuth;
 use Input;
 use DB;
 
@@ -14,29 +13,10 @@ use DB;
 class Restful extends Controller
 {
     /**
-     * @var array Behaviors that are implemented by this controller.
+     * @var array 
      */
-    /*public $implement = [
-        'Backend.Behaviors.FormController',
-        'Backend.Behaviors.ListController'
-    ];*/
+    public $error = ['status' => '', 'message' => ''];
 
-    /**
-     * @var string Configuration file for the `FormController` behavior.
-     */
-    //public $formConfig = 'config_form.yaml';
-
-    /**
-     * @var string Configuration file for the `ListController` behavior.
-     */
-    //public $listConfig = 'config_list.yaml';
-
-    public function __construct()
-    {
-        //parent::__construct();
-
-        //BackendMenu::setContext('Codalia.Bookend', 'bookend', 'restful');
-    }
 
     public function index()
     {
@@ -64,27 +44,79 @@ class Restful extends Controller
 	return response()->json(['error' => 'Resource not found'], 404);
     }
 
-    public function create()
+    public function store(Request $request)
     {
-        // Replace with logic to return the model data
-        return 'bar (create)';
-    }
+	if (!$user = $this->getUser($request->header('Authorization'))) {
+	    return response()->json(['error' => $this->error['message']], $this->error['status']);
+	}
 
-    public function store()
-    {
-        // Replace with logic to return the model data
-        return 'bar (store)';
+        if ($request->accepts(['text/html', 'application/json'])) {
+	    $request->request->add(['created_by' => $user->id]);
+
+	    // Getting the dispatcher instance (needed to enable again the event observer later on)
+	    $dispatcher = Book::getEventDispatcher();
+	    // Disabling the events
+	    Book::unsetEventDispatcher();
+
+	    try {
+		Book::create($request->all());
+	    }
+	    catch (\Exception $e) {
+		Book::setEventDispatcher($dispatcher);
+		return response()->json(['error' => $e->getMessage()], 404);
+	    }
+
+	    // Enabling the event dispatcher
+	    Book::setEventDispatcher($dispatcher);
+
+	    return $request->all();
+	}
+
+	return response()->json(['error' => 'Bad request. JSON is required.'], 400);
     }
 
     public function update(Request $request, $id)
     {
-        return $request;
-        // Replace with logic to return the model data
-        return 'bar (update)';
+	if (!$user = $this->getUser($request->header('Authorization'))) {
+	    return response()->json(['error' => $this->error['message']], $this->error['status']);
+	}
+
+        if ($request->accepts(['text/html', 'application/json'])) {
+	    // Check first for the item.
+	    if (!$book = Book::select('id', 'title', 'slug', 'description')->find($id)) {
+		return response()->json(['error' => 'Resource not found'], 404);
+	    }
+
+	    $request->request->add(['updated_by' => $user->id]);
+
+	    // Getting the dispatcher instance (needed to enable again the event observer later on)
+	    $dispatcher = Book::getEventDispatcher();
+	    // Disabling the events
+	    Book::unsetEventDispatcher();
+
+	    try {
+		$book->update($request->all());
+	    }
+	    catch (\Exception $e) {
+		Book::setEventDispatcher($dispatcher);
+		return response()->json(['error' => $e->getMessage()], 404);
+	    }
+
+	    // Enabling the event dispatcher
+	    Book::setEventDispatcher($dispatcher);
+
+	    return response()->json($book->setAppends([]), 200);
+	}
+
+	return response()->json(['error' => 'Bad request. JSON is required.'], 400);
     }
 
     public function destroy($id = null)
     {
+	if (!$user = $this->getUser($request->header('Authorization'))) {
+	    return response()->json(['error' => $this->error['message']], $this->error['status']);
+	}
+
         // Replace with logic to return the model data
         return 'bar (destroy)';
     }
@@ -94,5 +126,31 @@ class Restful extends Controller
 	return Book::select(['id', 'title', DB::raw("ExtractValue(description, '//text()') as description")])
 		     ->with(['categories' => function($query) { $query->select('id', 'name')->where('status', 'published'); }])
 		     ->where('status', 'published');
+    }
+
+    private function getUser($authorization)
+    {
+        $auth = explode(':', $authorization);
+
+	if (empty($auth) || count($auth) !== 2) {
+	    $this->error['status'] = 401;
+	    $this->error['message'] = 'Invalid authorization.';
+
+	    return false;
+	}
+
+	$credentials = ['login' => $auth[0], 'password' => $auth[1]];
+
+	try {
+	    BackendAuth::once($credentials);
+	}
+	catch (\Exception $e) {
+	    $this->error['status'] = 401;
+	    $this->error['message'] = $e->getMessage();
+
+	    return false;
+	}
+
+	return BackendAuth::user();
     }
 }

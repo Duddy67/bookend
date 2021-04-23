@@ -19,7 +19,7 @@ class CreateBooksTable extends Migration
 	    $table->integer('category_id')->unsigned()->nullable()->index();
 	    $table->integer('access_id')->unsigned()->nullable()->index();
 	    $table->integer('created_by')->unsigned()->nullable()->index();
-	    $table->integer('updated_by')->unsigned();
+	    $table->integer('updated_by')->unsigned()->nullable();
 	    $table->timestamp('published_up')->nullable();
 	    $table->timestamp('published_down')->nullable();
 	    $table->integer('checked_out')->unsigned()->nullable()->index();

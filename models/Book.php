@@ -213,8 +213,7 @@ class Book extends Model
 	$this->published_up = self::setPublishingDate($this);
 
 	$user = BackendAuth::getUser();
-	// For whatever reason the user object is null when refreshing the plugin. 
-	$this->created_by = ($user !== null) ? $user->id : 1;
+	$this->created_by = $user->id;
     }
 
     public function beforeUpdate()
