@@ -82,7 +82,7 @@ class Restful extends Controller
 	}
 
         if ($request->accepts(['text/html', 'application/json'])) {
-	    // Check first for the item.
+	    // Check first for the item to update.
 	    if (!$book = Book::select('id', 'title', 'slug', 'description')->find($id)) {
 		return response()->json(['error' => 'Resource not found'], 404);
 	    }
@@ -111,14 +111,20 @@ class Restful extends Controller
 	return response()->json(['error' => 'Bad request. JSON is required.'], 400);
     }
 
-    public function destroy($id = null)
+    public function destroy(Request $request, $id = null)
     {
 	if (!$user = $this->getUser($request->header('Authorization'))) {
 	    return response()->json(['error' => $this->error['message']], $this->error['status']);
 	}
 
-        // Replace with logic to return the model data
-        return 'bar (destroy)';
+	// Check first for the item to delete.
+	if (!$book = Book::select('id', 'title', 'slug', 'description')->find($id)) {
+	    return response()->json(['error' => 'Resource not found'], 404);
+	}
+
+	$book->delete($id);
+
+	return response()->json(['message' => 'Item deleted.'], 200);
     }
 
     private function getQuery()
