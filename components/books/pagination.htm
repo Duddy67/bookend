@@ -1,20 +1,21 @@
 {% if books.lastPage > 1 %}
+    {% set search = (get('search')) ? '&search=' ~ get('search') : '' %}
     <ul class="pagination">
         {% if books.currentPage > 1 %}
             <li>
-		<a href="{{ this.page.baseFileName|page() ~ '?page=' ~ (books.currentPage - 1) }}">&larr; Prev</a>
+		<a href="{{ this.page.baseFileName|page() ~ '?page=' ~ (books.currentPage - 1) ~ search }}">&larr; Prev</a>
 	    </li>
         {% endif %}
 
         {% for page in 1..books.lastPage %}
             <li class="{{ books.currentPage == page ? 'active' : null }}">
-		<a href="{{ this.page.baseFileName|page() ~ '?page=' ~ page }}">{{ page }}</a>
+		<a href="{{ this.page.baseFileName|page() ~ '?page=' ~ page ~ search }}">{{ page }}</a>
             </li>
         {% endfor %}
 
         {% if books.lastPage > books.currentPage %}
             <li>
-		<a href="{{ this.page.baseFileName|page() ~ '?page=' ~ (books.currentPage + 1) }}">Next &rarr;</a>
+		<a href="{{ this.page.baseFileName|page() ~ '?page=' ~ (books.currentPage + 1) ~ search }}">Next &rarr;</a>
 	    </li>
         {% endif %}
     </ul>

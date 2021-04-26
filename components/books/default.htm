@@ -5,6 +5,20 @@
     {% partial "@breadcrumb" path = category.breadcrumb prefix = category.prefix %}
 {% endif %}
 
+<div class="row mb-4">
+    <div class="col-6">
+	<form action="{{ ''|page }}" method="GET">
+	    <label for="search">Search</label>
+	    <input type="text" name="search" class="form-control" value="">
+	</form>
+    </div>
+    <div class="col-2 mt-4">
+	<form action="{{ ''|page }}" method="POST">
+	    <button type="submit" class="btn btn-success mt-2">Clear</button>
+	</form>
+    </div>
+</div>
+
 <div id="books">
     {% partial '@books' %}
 </div>
