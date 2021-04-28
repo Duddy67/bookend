@@ -107,13 +107,16 @@ class Plugin extends PluginBase
 	\Cms\Controllers\Index::extend(function ($controller) {
 	    $controller->bindEvent('template.processSettingsBeforeSave', function ($dataHolder) {
 	        $data = post();  
-		$filtering = $dataHolder->settings['bookList']['categoryFilter'];
-		// Ensures the page file names for categories fit the correct pattern when hierarchical_url option is enabled.
-		// N.B: Only active when category is filtered by slug.
-		if (preg_match('#^\{\{#', $filtering) && Settings::get('hierarchical_url', 0) && $data['templateType'] == 'page' &&
-		    isset($data['component_names']) && in_array('bookList', $data['component_names']) &&
-		    !preg_match('#^category-level-[0-9]+\.htm$#', $data['fileName'])) {
-		    throw new \ApplicationException(\Lang::get('codalia.bookend::lang.settings.invalid_file_name'));
+		$filtering = isset($dataHolder->settings['bookList']['categoryFilter']) ? $dataHolder->settings['bookList']['categoryFilter'] : null; 
+
+		if ($filtering) {
+		    // Ensures the page file names for categories fit the correct pattern when hierarchical_url option is enabled.
+		    // N.B: Only active when category is filtered by slug.
+		    if (preg_match('#^\{\{#', $filtering) && Settings::get('hierarchical_url', 0) && $data['templateType'] == 'page' &&
+			isset($data['component_names']) && in_array('bookList', $data['component_names']) &&
+			!preg_match('#^category-level-[0-9]+\.htm$#', $data['fileName'])) {
+			throw new \ApplicationException(\Lang::get('codalia.bookend::lang.settings.invalid_file_name'));
+		    }
 		}
 	    });
 	});

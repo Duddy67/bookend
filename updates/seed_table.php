@@ -3,6 +3,7 @@
 use Seeder;
 use Codalia\Bookend\Models\Book;
 use Codalia\Bookend\Models\Category;
+use DB;
 
 class SeedBookendTables extends Seeder
 {
@@ -52,7 +53,56 @@ class SeedBookendTables extends Seeder
                           ['name' => 'Countries', 'slug' => 'countries'],
                           ['name' => 'England', 'slug' => 'england'],
                           ['name' => 'France', 'slug' => 'france'],
-                          ['name' => 'United States', 'slug' => 'united-states']
+                          ['name' => 'United States', 'slug' => 'united-states'],
+                          ['name' => 'Featured', 'slug' => 'featured']
+    ];
+
+    public $query = 'INSERT INTO `codalia_bookend_categories_books`(`book_id`, `category_id`) VALUES 
+		    (1,3), (1,14), (1,21), (1,23),
+		    (2,4), (2,9), (2,22), (2,23),
+		    (3,3), (3,13), (3,22), (3,23),
+		    (4,2), (4,8), (4,20),
+		    (5,6), (5,10), (5,22), (5,23),
+		    (6,6), (6,10), (6,22),
+		    (7,6), (7,10), (7,22),
+		    (8,2), (8,11), (8,20), (8,23),
+		    (9,6), (9,12), (9,20), (9,23),
+		    (10,6), (10,12), (10,20),
+		    (11,6), (11,12), (11,20),
+		    (12,5), (12,16), (12,20), (12,23),
+		    (13,5), (13,16), (13,20),
+		    (14,5), (14,15), (14,21), (14,23),
+		    (15,3), (15,14), (15,21),
+		    (16,3), (16,13), (16,22),
+		    (17,3), (17,13), (17,22),
+		    (18,3), (18,9), (18,22),
+		    (19,3), (19,17), (19,21),
+		    (20,3), (20,17), (20,21),
+		    (21,3), (21,18), (21,21),
+		    (22,3), (22,18), (22,21);';
+
+    public $ordering = [['parent_id' => '', 'nest_left' => 1, 'nest_right' => 12, 'nest_depth' => 0],
+			['parent_id' => 1, 'nest_left' => 2, 'nest_right' => 3, 'nest_depth' => 1],
+			['parent_id' => 1, 'nest_left' => 4, 'nest_right' => 5, 'nest_depth' => 1],
+			['parent_id' => 1, 'nest_left' => 6, 'nest_right' => 7, 'nest_depth' => 1],
+			['parent_id' => 1, 'nest_left' => 8, 'nest_right' => 9, 'nest_depth' => 1],
+			['parent_id' => 1, 'nest_left' => 10, 'nest_right' => 11, 'nest_depth' => 1],
+			['parent_id' => '', 'nest_left' => 13, 'nest_right' => 36, 'nest_depth' => 0],
+			['parent_id' => 7, 'nest_left' => 14, 'nest_right' => 15, 'nest_depth' => 1],
+			['parent_id' => 7, 'nest_left' => 16, 'nest_right' => 17, 'nest_depth' => 1],
+			['parent_id' => 7, 'nest_left' => 18, 'nest_right' => 19, 'nest_depth' => 1],
+			['parent_id' => 7, 'nest_left' => 20, 'nest_right' => 21, 'nest_depth' => 1],
+			['parent_id' => 7, 'nest_left' => 22, 'nest_right' => 23, 'nest_depth' => 1],
+			['parent_id' => 7, 'nest_left' => 24, 'nest_right' => 25, 'nest_depth' => 1],
+			['parent_id' => 7, 'nest_left' => 26, 'nest_right' => 27, 'nest_depth' => 1],
+			['parent_id' => 7, 'nest_left' => 28, 'nest_right' => 29, 'nest_depth' => 1],
+			['parent_id' => 7, 'nest_left' => 30, 'nest_right' => 31, 'nest_depth' => 1],
+			['parent_id' => 7, 'nest_left' => 32, 'nest_right' => 33, 'nest_depth' => 1],
+			['parent_id' => 7, 'nest_left' => 34, 'nest_right' => 35, 'nest_depth' => 1],
+			['parent_id' => '', 'nest_left' => 37, 'nest_right' => 44, 'nest_depth' => 0],
+			['parent_id' => 19, 'nest_left' => 38, 'nest_right' => 39, 'nest_depth' => 1],
+			['parent_id' => 19, 'nest_left' => 40, 'nest_right' => 41, 'nest_depth' => 1],
+			['parent_id' => 19, 'nest_left' => 42, 'nest_right' => 43, 'nest_depth' => 1] 
     ];
 
 
@@ -75,6 +125,16 @@ class SeedBookendTables extends Seeder
 	Category::create(['name' => $category['name'], 'slug' => $category['slug'], 
 		     'description' => '<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>', 
 		     'status' => 'published']);
+      }
+
+      DB::statement($this->query);
+
+      foreach ($this->ordering as $key => $order) {
+	  $id = $key + 1;
+	  $parentId = (!empty($order['parent_id'])) ? 'parent_id = '.$order['parent_id'].',' : '';
+	  $query = 'UPDATE codalia_bookend_categories SET '.$parentId.' nest_left = '.$order['nest_left'].', nest_right = '.$order['nest_right'].', nest_depth = '.$order['nest_depth'].' WHERE id = '.$id.';';
+
+	  DB::statement($query);
       }
     }
 }

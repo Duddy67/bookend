@@ -212,8 +212,9 @@ class Book extends Model
 
 	$this->published_up = self::setPublishingDate($this);
 
-	$user = BackendAuth::getUser();
-	$this->created_by = $user->id;
+	// Prevents error while running the "php artisan plugin:refresh" command.
+	$userId = (isset(BackendAuth::getUser()->id)) ? BackendAuth::getUser()->id : 1;
+	$this->created_by = $userId;
     }
 
     public function beforeUpdate()

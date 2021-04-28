@@ -155,9 +155,9 @@ class Categories extends Controller
     {
 	$category = Category::find($recordId); 
 
-	// Checks if the category is set as main category in a article.
-	if ($category->articles()->where('codalia_journal_articles.category_id', $recordId)->first()) {
-	    Flash::warning(Lang::get('codalia.journal::lang.action.used_as_main_category', ['name' => $category->name]));
+	// Checks if the category is set as main category in a book.
+	if ($category->books()->where('codalia_bookend_books.category_id', $recordId)->first()) {
+	    Flash::warning(Lang::get('codalia.bookend::lang.action.used_as_main_category', ['name' => $category->name]));
 	    return;
 	}
 
